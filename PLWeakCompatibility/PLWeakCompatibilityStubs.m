@@ -20,6 +20,24 @@
 #undef objc_loadWeak
 #undef objc_storeWeak
 
+// MAZeroingWeakRef Support
+static Class MAZWR = Nil;
+static inline boolean_t has_mazwr () {
+    static dispatch_once_t lookup_once = 0;
+    dispatch_once(&lookup_once, ^{
+        MAZWR = NSClassFromString(@"MAZeroingWeakRef");
+    });
+
+    if (MAZWR != nil)
+        return true;
+    return false;
+}
+
+// Minimal MAZWR API that we rely on
+@interface MAZeroingWeakRef : NSObject
++ (PLObjectPtr) refWithTarget: (PLObjectPtr) target;
+- (PLObjectPtr) target;
+@end
 
 // Runtime (or ARC compatibility) prototypes we use here.
 PLObjectPtr objc_autorelease(PLObjectPtr obj);
@@ -52,7 +70,12 @@ void PLWeakCompatibilitySetFallthroughEnabled(BOOL enabled) {
 
 PLObjectPtr objc_loadWeakRetained(PLObjectPtr *location) {
     NEXT(objc_loadWeakRetained, location);
-    
+
+    if (has_mazwr()) {
+        MAZeroingWeakRef *mazrw = (__bridge MAZeroingWeakRef *) *location;
+        return objc_retain([mazrw target]);
+    }
+
     return PLLoadWeakRetained(location);
 }
 
@@ -85,6 +108,11 @@ PLObjectPtr objc_loadWeak(PLObjectPtr *location) {
 
 PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj) {
     NEXT(objc_storeWeak, location, obj);
+
+    if (has_mazwr()) {
+        *location = [MAZWR refWithTarget: obj];
+        return obj;
+    }
 
     PLUnregisterWeak(location, obj);
 
