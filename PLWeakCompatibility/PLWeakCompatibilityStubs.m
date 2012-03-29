@@ -22,7 +22,11 @@
 
 // MAZeroingWeakRef Support
 static Class MAZWR = Nil;
-static inline boolean_t has_mazwr () {
+static bool mazwrEnabled = false;
+static inline bool has_mazwr () {
+    if (!mazwrEnabled)
+        return false;
+
     static dispatch_once_t lookup_once = 0;
     dispatch_once(&lookup_once, ^{
         MAZWR = NSClassFromString(@"MAZeroingWeakRef");
@@ -38,6 +42,11 @@ static inline boolean_t has_mazwr () {
 + (id) initWithTarget: (PLObjectPtr) target;
 - (PLObjectPtr) target;
 @end
+
+void PLWeakCompatibilitySetMAZWREnabled(BOOL enabled) {
+    mazwrEnabled = enabled;
+}
+
 
 // Runtime (or ARC compatibility) prototypes we use here.
 PLObjectPtr objc_autorelease(PLObjectPtr obj);

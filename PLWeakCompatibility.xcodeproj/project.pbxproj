@@ -22,6 +22,12 @@
 		C2CB834A1523D8F300E8ABFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
 		C2CB83521523D8F400E8ABFC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C2CB83501523D8F400E8ABFC /* InfoPlist.strings */; };
 		C2CB83551523D8F400E8ABFC /* PLWeakCompatibilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB83541523D8F400E8ABFC /* PLWeakCompatibilityTests.m */; };
+		C2CB835F1523D91500E8ABFE /* MAZeroingWeakRef.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFD /* MAZeroingWeakRef.h */; };
+		C2CB835F1523D91500E8ABFF /* MAZeroingWeakRef.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFD /* MAZeroingWeakRef.h */; };
+		C2CB835F1523D91500E8AC01 /* MAZeroingWeakRef.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8AC00 /* MAZeroingWeakRef.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		C2CB835F1523D91500E8AC02 /* MAZeroingWeakRef.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8AC00 /* MAZeroingWeakRef.m */; };
+		C2CB835F1523D91500E8AC03 /* MAZeroingWeakRef.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8AC00 /* MAZeroingWeakRef.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		C2CB835F1523D91500E8AC04 /* MAZeroingWeakRef.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8AC00 /* MAZeroingWeakRef.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +73,9 @@
 		C2CB83541523D8F400E8ABFC /* PLWeakCompatibilityTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PLWeakCompatibilityTests.m; sourceTree = "<group>"; };
 		C2CB835E1523D91500E8ABFC /* PLWeakCompatibilityStubs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLWeakCompatibilityStubs.h; sourceTree = "<group>"; };
 		C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLWeakCompatibilityStubs.m; sourceTree = "<group>"; };
+		C2CB835F1523D91500E8ABFD /* MAZeroingWeakRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAZeroingWeakRef.h; sourceTree = "<group>"; };
+		C2CB835F1523D91500E8AC00 /* MAZeroingWeakRef.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MAZeroingWeakRef.m; sourceTree = "<group>"; };
+		C2CB835F1523D91500E8AC05 /* MAZeroingWeakRefNativeZWRNotAllowedTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAZeroingWeakRefNativeZWRNotAllowedTable.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +118,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05305D68152514DE00069F78 /* Optional MAZeroingWeakRef */ = {
+			isa = PBXGroup;
+			children = (
+				C2CB835F1523D91500E8AC05 /* MAZeroingWeakRefNativeZWRNotAllowedTable.h */,
+				C2CB835F1523D91500E8AC00 /* MAZeroingWeakRef.m */,
+				C2CB835F1523D91500E8ABFD /* MAZeroingWeakRef.h */,
+			);
+			name = "Optional MAZeroingWeakRef";
+			sourceTree = "<group>";
+		};
 		0538879C1523F6CD00CDC1DF /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -153,6 +172,7 @@
 		C2CB83351523D8F300E8ABFC /* PLWeakCompatibility */ = {
 			isa = PBXGroup;
 			children = (
+				05305D68152514DE00069F78 /* Optional MAZeroingWeakRef */,
 				C2CB835E1523D91500E8ABFC /* PLWeakCompatibilityStubs.h */,
 				C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */,
 				C2CB83361523D8F300E8ABFC /* Supporting Files */,
@@ -198,6 +218,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				053888771523FFC700CDC1DF /* PLWeakCompatibilityStubs.h in Headers */,
+				C2CB835F1523D91500E8ABFE /* MAZeroingWeakRef.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,6 +226,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2CB835F1523D91500E8ABFF /* MAZeroingWeakRef.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,6 +395,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				053888261523F7A500CDC1DF /* PLWeakCompatibilityStubs.m in Sources */,
+				C2CB835F1523D91500E8AC01 /* MAZeroingWeakRef.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +404,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				053888271523F7A900CDC1DF /* PLWeakCompatibilityStubs.m in Sources */,
+				C2CB835F1523D91500E8AC02 /* MAZeroingWeakRef.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,6 +413,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				053888291523F98C00CDC1DF /* PLWeakCompatibilityTests.m in Sources */,
+				C2CB835F1523D91500E8AC04 /* MAZeroingWeakRef.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,6 +423,7 @@
 			files = (
 				05286A981524D85F00FD0AD7 /* PLWeakCompatibilityStubs.m in Sources */,
 				C2CB83551523D8F400E8ABFC /* PLWeakCompatibilityTests.m in Sources */,
+				C2CB835F1523D91500E8AC03 /* MAZeroingWeakRef.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

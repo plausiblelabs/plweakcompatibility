@@ -18,4 +18,5 @@ void objc_moveWeak(PLObjectPtr *to, PLObjectPtr *from);
 PLObjectPtr objc_loadWeak(PLObjectPtr *location);
 PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj);
 
+void PLWeakCompatibilitySetMAZWREnabled(BOOL enabled);
 void PLWeakCompatibilitySetFallthroughEnabled(BOOL enabled);

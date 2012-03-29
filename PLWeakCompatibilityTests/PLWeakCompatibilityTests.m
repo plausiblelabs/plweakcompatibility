@@ -30,7 +30,11 @@
 - (void) testBasics {
     PLWeakCompatibilitySetFallthroughEnabled(YES);
     [self reallyTestBasics];
+
     PLWeakCompatibilitySetFallthroughEnabled(NO);
+    [self reallyTestBasics];
+
+    PLWeakCompatibilitySetMAZWREnabled(YES);
     [self reallyTestBasics];
 }
 
