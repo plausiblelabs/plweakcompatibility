@@ -8,14 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-// Convince ARC to leave these kids alone
-typedef void *VoidPtr;
-#define id VoidPtr
+__unsafe_unretained id objc_loadWeakRetained(__unsafe_unretained id *location);
+__unsafe_unretained id objc_initWeak(__unsafe_unretained id *addr, __unsafe_unretained id val);
+void objc_destroyWeak(__unsafe_unretained id *addr);
+void objc_copyWeak(__unsafe_unretained id *to, __unsafe_unretained id *from);
+void objc_moveWeak(__unsafe_unretained id *to, __unsafe_unretained id *from);
+__unsafe_unretained id objc_loadWeak(__unsafe_unretained id *location);
+__unsafe_unretained id objc_storeWeak(__unsafe_unretained id *location, __unsafe_unretained id obj);
 
-id objc_loadWeakRetained(id *location);
-id objc_initWeak(id *addr, id val);
-void objc_destroyWeak(id *addr);
-void objc_copyWeak(id *to, id *from);
-void objc_moveWeak(id *to, id *from);
-id objc_loadWeak(id *location);
-id objc_storeWeak(id *location, id obj);
+void PLWeakCompatibilitySetFallthroughEnabled(BOOL enabled);
