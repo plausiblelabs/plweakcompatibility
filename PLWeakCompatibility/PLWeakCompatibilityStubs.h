@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-__unsafe_unretained id objc_loadWeakRetained(__unsafe_unretained id *location);
-__unsafe_unretained id objc_initWeak(__unsafe_unretained id *addr, __unsafe_unretained id val);
-void objc_destroyWeak(__unsafe_unretained id *addr);
-void objc_copyWeak(__unsafe_unretained id *to, __unsafe_unretained id *from);
-void objc_moveWeak(__unsafe_unretained id *to, __unsafe_unretained id *from);
-__unsafe_unretained id objc_loadWeak(__unsafe_unretained id *location);
-__unsafe_unretained id objc_storeWeak(__unsafe_unretained id *location, __unsafe_unretained id obj);
+typedef void *PLObjectPtr;
+
+PLObjectPtr objc_loadWeakRetained(PLObjectPtr *location);
+PLObjectPtr objc_initWeak(PLObjectPtr *addr, PLObjectPtr val);
+void objc_destroyWeak(PLObjectPtr *addr);
+void objc_copyWeak(PLObjectPtr *to, PLObjectPtr *from);
+void objc_moveWeak(PLObjectPtr *to, PLObjectPtr *from);
+PLObjectPtr objc_loadWeak(PLObjectPtr *location);
+PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj);
 
 void PLWeakCompatibilitySetFallthroughEnabled(BOOL enabled);

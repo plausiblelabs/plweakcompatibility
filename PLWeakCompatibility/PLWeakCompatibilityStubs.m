@@ -11,15 +11,25 @@
 #import <dlfcn.h>
 #import <pthread.h>
 
+// We need our own prototypes for some functions to avoid conflicts, so disable the one from the header
+#define object_getClass object_getClass_disabled_for_ARC_PLWeakCompatibilityStubs
+#define objc_loadWeak objc_loadWeak_disabled_for_ARC_PLWeakCompatibilityStubs
+#define objc_storeWeak objc_storeWeak_disabled_for_ARC_PLWeakCompatibilityStubs
+#import <objc/runtime.h>
+#undef object_getClass
+#undef objc_loadWeak
+#undef objc_storeWeak
+
 
 // Runtime (or ARC compatibility) prototypes we use here.
-__unsafe_unretained id objc_autorelease(__unsafe_unretained id obj);
-__unsafe_unretained id objc_retain(__unsafe_unretained id obj);
+PLObjectPtr objc_autorelease(PLObjectPtr obj);
+PLObjectPtr objc_retain(PLObjectPtr obj);
+Class object_getClass(PLObjectPtr obj);
 
 // Primitive functions used to implement all weak stubs
-static __unsafe_unretained id PLLoadWeakRetained(__unsafe_unretained id *location);
-static void PLRegisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj);
-static void PLUnregisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj);
+static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location);
+static void PLRegisterWeak(PLObjectPtr *location, PLObjectPtr obj);
+static void PLUnregisterWeak(PLObjectPtr *location, PLObjectPtr obj);
 
 // Convenience for falling through to the system implementation.
 static BOOL fallthroughEnabled = YES;
@@ -40,40 +50,40 @@ void PLWeakCompatibilitySetFallthroughEnabled(BOOL enabled) {
 #pragma mark Stubs
 ////////////////////
 
-__unsafe_unretained id objc_loadWeakRetained(__unsafe_unretained id *location) {
+PLObjectPtr objc_loadWeakRetained(PLObjectPtr *location) {
     NEXT(objc_loadWeakRetained, location);
     
     return PLLoadWeakRetained(location);
 }
 
-__unsafe_unretained id objc_initWeak(__unsafe_unretained id *addr, __unsafe_unretained id val) {
+PLObjectPtr objc_initWeak(PLObjectPtr *addr, PLObjectPtr val) {
     NEXT(objc_initWeak, addr, val);
     *addr = NULL;
     return objc_storeWeak(addr, val);
 }
 
-void objc_destroyWeak(__unsafe_unretained id *addr) {
+void objc_destroyWeak(PLObjectPtr *addr) {
     NEXT(objc_destroyWeak, addr);
     objc_storeWeak(addr, NULL);
 }
 
-void objc_copyWeak(__unsafe_unretained id *to, __unsafe_unretained id *from) {
+void objc_copyWeak(PLObjectPtr *to, PLObjectPtr *from) {
     NEXT(objc_copyWeak, to, from);
     objc_initWeak(to, objc_loadWeak(from));
 }
 
-void objc_moveWeak(__unsafe_unretained id *to, __unsafe_unretained id *from) {
+void objc_moveWeak(PLObjectPtr *to, PLObjectPtr *from) {
     NEXT(objc_moveWeak, to, from);
     objc_copyWeak(to, from);
     objc_destroyWeak(from);
 }
 
-__unsafe_unretained id objc_loadWeak(__unsafe_unretained id *location) {
+PLObjectPtr objc_loadWeak(PLObjectPtr *location) {
     NEXT(objc_loadWeak, location);
     return objc_autorelease(objc_loadWeakRetained(location));
 }
 
-__unsafe_unretained id objc_storeWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
+PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj) {
     NEXT(objc_storeWeak, location, obj);
 
     PLUnregisterWeak(location, obj);
@@ -97,21 +107,30 @@ static pthread_mutex_t gWeakMutex;
 // A map from objects to CFMutableSets containing weak addresses
 static CFMutableDictionaryRef gObjectToAddressesMap;
 
+// A list of all classes that have been swizzled
+static CFMutableSetRef gSwizzledClasses;
+
 // Ensure everything is properly initialized
 static void WeakInit(void);
 
 // Make sure the object's class is properly swizzled to clear weak refs on deallocation
-static void EnsureDeallocationTrigger(__unsafe_unretained id obj);
+static void EnsureDeallocationTrigger(PLObjectPtr obj);
+
+// Selectors, for convenience and to work around ARC paranoia re: @selector(release) etc.
+static SEL releaseSEL;
+static SEL releaseSELSwizzled;
+static SEL deallocSEL;
+static SEL deallocSELSwizzled;
 
 
 ////////////////////
 #pragma mark Primitive Functions
 ////////////////////
 
-static __unsafe_unretained id PLLoadWeakRetained(__unsafe_unretained id *location) {
+static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location) {
     WeakInit();
 
-    __unsafe_unretained id obj;
+    PLObjectPtr obj;
     pthread_mutex_lock(&gWeakMutex); {
         obj = *location;
         objc_retain(obj);
@@ -121,15 +140,14 @@ static __unsafe_unretained id PLLoadWeakRetained(__unsafe_unretained id *locatio
     return obj;
 }
 
-static void PLRegisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
+static void PLRegisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
     WeakInit();
 
     pthread_mutex_lock(&gWeakMutex); {
-        const void *key = (__bridge const void *)obj;
-        CFMutableSetRef addresses = (CFMutableSetRef)CFDictionaryGetValue(gObjectToAddressesMap, key);
+        CFMutableSetRef addresses = (CFMutableSetRef)CFDictionaryGetValue(gObjectToAddressesMap, obj);
         if (addresses == NULL) {
             addresses = CFSetCreateMutable(NULL, 0, NULL);
-            CFDictionarySetValue(gObjectToAddressesMap, key, addresses);
+            CFDictionarySetValue(gObjectToAddressesMap, obj, addresses);
             CFRelease(addresses);
         }
 
@@ -139,11 +157,11 @@ static void PLRegisterWeak(__unsafe_unretained id *location, __unsafe_unretained
     } pthread_mutex_unlock(&gWeakMutex);
 }
 
-static void PLUnregisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
+static void PLUnregisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
     WeakInit();
 
     pthread_mutex_lock(&gWeakMutex); {
-        CFMutableSetRef addresses = (CFMutableSetRef)CFDictionaryGetValue(gObjectToAddressesMap, (__bridge const void *)*location);
+        CFMutableSetRef addresses = (CFMutableSetRef)CFDictionaryGetValue(gObjectToAddressesMap, *location);
         if (addresses != NULL)
             CFSetRemoveValue(addresses, location);
     } pthread_mutex_unlock(&gWeakMutex);
@@ -157,12 +175,65 @@ static void PLUnregisterWeak(__unsafe_unretained id *location, __unsafe_unretain
 static void WeakInit(void) {
     static dispatch_once_t pred;
     dispatch_once(&pred, ^{
-        pthread_mutex_init(&gWeakMutex, NULL);
+        pthread_mutexattr_t attr;
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+
+        pthread_mutex_init(&gWeakMutex, &attr);
+
+        pthread_mutexattr_destroy(&attr);
 
         gObjectToAddressesMap = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+
+        gSwizzledClasses = CFSetCreateMutable(NULL, 0, NULL);
+
+        releaseSEL = sel_getUid("release");
+        releaseSELSwizzled = sel_getUid("release_PLWeakCompatibility_swizzled");
+        deallocSEL = sel_getUid("dealloc");
+        deallocSELSwizzled = sel_getUid("dealloc_PLWeakCompatibility_swizzled");
     });
 }
 
-static void EnsureDeallocationTrigger(__unsafe_unretained id obj) {
+static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
+    pthread_mutex_lock(&gWeakMutex); {
+        Class targetClass = object_getClass(self);
+        void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, releaseSELSwizzled);
+        origIMP(self, _cmd);
+    } pthread_mutex_unlock(&gWeakMutex);
+}
 
+static void ClearAddress(const void *value, void *context) {
+    void **address = (void **)value;
+    *address = NULL;
+}
+
+static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
+    pthread_mutex_lock(&gWeakMutex); {
+        CFSetRef addresses = CFDictionaryGetValue(gObjectToAddressesMap, self);
+        if (addresses != NULL)
+            CFSetApplyFunction(addresses, ClearAddress, NULL);
+        CFDictionaryRemoveValue(gObjectToAddressesMap, self);
+
+        Class targetClass = object_getClass(self);
+        void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, deallocSELSwizzled);
+        origIMP(self, _cmd);
+    } pthread_mutex_unlock(&gWeakMutex);
+}
+
+static void Swizzle(Class c, SEL orig, SEL new, IMP newIMP) {
+    Method m = class_getInstanceMethod(c, orig);
+    IMP origIMP = method_getImplementation(m);
+    class_addMethod(c, new, origIMP, method_getTypeEncoding(m));
+    method_setImplementation(m, newIMP);
+}
+
+static void EnsureDeallocationTrigger(PLObjectPtr obj) {
+    Class c = object_getClass(obj);
+    if (CFSetContainsValue(gSwizzledClasses, (__bridge const void *)c))
+        return;
+
+    Swizzle(c, releaseSEL, releaseSELSwizzled, (IMP)SwizzledReleaseIMP);
+    Swizzle(c, deallocSEL, deallocSELSwizzled, (IMP)SwizzledDeallocIMP);
+
+    CFSetAddValue(gSwizzledClasses, (__bridge const void *)c);
 }
