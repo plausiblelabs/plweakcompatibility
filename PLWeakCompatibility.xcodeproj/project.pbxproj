@@ -50,10 +50,6 @@
 		0538882F1523FAC000CDC1DF /* PLWeakCompatibilityStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */; };
 		053888761523FFC300CDC1DF /* PLWeakCompatibilityStubs.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CB835E1523D91500E8ABFC /* PLWeakCompatibilityStubs.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		053888771523FFC700CDC1DF /* PLWeakCompatibilityStubs.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CB835E1523D91500E8ABFC /* PLWeakCompatibilityStubs.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		0538887C1524025700CDC1DF /* PLBlockIMP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0538887B1524024200CDC1DF /* PLBlockIMP.framework */; };
-		0538887E1524026500CDC1DF /* PLBlockIMP.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 0538887B1524024200CDC1DF /* PLBlockIMP.framework */; };
-		0538887F1524026B00CDC1DF /* PLBlockIMP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 053888791524024200CDC1DF /* PLBlockIMP.framework */; };
-		053888801524027100CDC1DF /* PLBlockIMP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 053888791524024200CDC1DF /* PLBlockIMP.framework */; };
 		053888811524028F00CDC1DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
 		C2CB83481523D8F300E8ABFC /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83471523D8F300E8ABFC /* SenTestingKit.framework */; };
 		C2CB834A1523D8F300E8ABFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
@@ -127,7 +123,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				0538887E1524026500CDC1DF /* PLBlockIMP.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -145,8 +140,6 @@
 		053887ED1523F72900CDC1DF /* libPLWeakCompatibility-iOS-Simulator.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPLWeakCompatibility-iOS-Simulator.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		053887FA1523F72900CDC1DF /* PLWeakCompatibility-iOS-Simulator-Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PLWeakCompatibility-iOS-Simulator-Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		053888281523F7EA00CDC1DF /* PLWeakCompatibility-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PLWeakCompatibility-Info.plist"; sourceTree = "<group>"; };
-		053888791524024200CDC1DF /* PLBlockIMP.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PLBlockIMP.framework; sourceTree = "<group>"; };
-		0538887B1524024200CDC1DF /* PLBlockIMP.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PLBlockIMP.framework; sourceTree = "<group>"; };
 		C2CB83311523D8F300E8ABFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C2CB83391523D8F300E8ABFC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C2CB833B1523D8F300E8ABFC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -167,7 +160,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				053888811524028F00CDC1DF /* Foundation.framework in Frameworks */,
-				0538887C1524025700CDC1DF /* PLBlockIMP.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,7 +175,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				053887C71523F6F700CDC1DF /* Foundation.framework in Frameworks */,
-				0538887F1524026B00CDC1DF /* PLBlockIMP.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,7 +193,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				053887EE1523F72900CDC1DF /* Foundation.framework in Frameworks */,
-				053888801524027100CDC1DF /* PLBlockIMP.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,24 +228,6 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		053888781524024200CDC1DF /* PLBlockIMP-iOS */ = {
-			isa = PBXGroup;
-			children = (
-				053888791524024200CDC1DF /* PLBlockIMP.framework */,
-			);
-			name = "PLBlockIMP-iOS";
-			path = PLBlockIMP/iOS;
-			sourceTree = "<group>";
-		};
-		0538887A1524024200CDC1DF /* PLBlockIMP-Mac */ = {
-			isa = PBXGroup;
-			children = (
-				0538887B1524024200CDC1DF /* PLBlockIMP.framework */,
-			);
-			name = "PLBlockIMP-Mac";
-			path = PLBlockIMP/Mac;
-			sourceTree = "<group>";
-		};
 		C2CB83201523D8F300E8ABFC = {
 			isa = PBXGroup;
 			children = (
@@ -286,8 +258,6 @@
 				C2CB83311523D8F300E8ABFC /* Foundation.framework */,
 				C2CB83471523D8F300E8ABFC /* SenTestingKit.framework */,
 				0538879C1523F6CD00CDC1DF /* Other Frameworks */,
-				053888781524024200CDC1DF /* PLBlockIMP-iOS */,
-				0538887A1524024200CDC1DF /* PLBlockIMP-Mac */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
