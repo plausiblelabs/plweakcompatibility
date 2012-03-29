@@ -110,13 +110,16 @@ PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj) {
     NEXT(objc_storeWeak, location, obj);
 
     if (has_mazwr()) {
+        if (*location != nil)
+            objc_autorelease(*location);
+
         if (obj != nil) {
             MAZeroingWeakRef *ref = [[MAZWR alloc] initWithTarget: obj];
             *location = (__bridge_retained PLObjectPtr) ref;
         } else {
-            objc_autorelease(*location);
             *location = nil;
         }
+
         return obj;
     }
 
