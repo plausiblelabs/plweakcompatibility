@@ -14,6 +14,11 @@
 // Runtime (or ARC compatibility) prototypes we use here.
 id objc_autorelease(id obj);
 
+// Primitive functions used to implement all weak stubs
+static __unsafe_unretained id PLLoadWeakRetained(__unsafe_unretained id *location);
+static void PLRegisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj);
+static void PLUnregisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj);
+
 // Convenience for falling through to the system implementation.
 static BOOL fallthroughEnabled = YES;
 
@@ -29,11 +34,14 @@ void PLWeakCompatibilitySetFallthroughEnabled(BOOL enabled) {
     fallthroughEnabled = enabled;
 }
 
+////////////////////
+#pragma mark Stubs
+////////////////////
+
 __unsafe_unretained id objc_loadWeakRetained(__unsafe_unretained id *location) {
     NEXT(objc_loadWeakRetained, location);
     
-    // TODO: this is a primitive method
-    return NULL;
+    return PLLoadWeakRetained(location);
 }
 
 __unsafe_unretained id objc_initWeak(__unsafe_unretained id *addr, __unsafe_unretained id val) {
@@ -65,7 +73,30 @@ __unsafe_unretained id objc_loadWeak(__unsafe_unretained id *location) {
 
 __unsafe_unretained id objc_storeWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
     NEXT(objc_storeWeak, location, obj);
-    
-    // TODO: this is a primitive method
-    return NULL;
+
+    if (*location != nil)
+        PLUnregisterWeak(location, obj);
+
+    *location = obj;
+
+    if (*location != nil)
+        PLRegisterWeak(location, obj);
+
+    return obj;
+}
+
+////////////////////
+#pragma mark Primitive Functions
+////////////////////
+
+static __unsafe_unretained id PLLoadWeakRetained(__unsafe_unretained id *location) {
+    return nil;
+}
+
+static void PLRegisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
+
+}
+
+static void PLUnregisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
+
 }
