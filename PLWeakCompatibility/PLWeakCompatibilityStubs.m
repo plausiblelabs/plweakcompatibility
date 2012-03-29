@@ -100,6 +100,9 @@ static CFMutableDictionaryRef gObjectToAddressesMap;
 // Ensure everything is properly initialized
 static void WeakInit(void);
 
+// Make sure the object's class is properly swizzled to clear weak refs on deallocation
+static void EnsureDeallocationTrigger(__unsafe_unretained id obj);
+
 
 ////////////////////
 #pragma mark Primitive Functions
@@ -121,13 +124,26 @@ static __unsafe_unretained id PLLoadWeakRetained(__unsafe_unretained id *locatio
 static void PLRegisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
     WeakInit();
 
+    pthread_mutex_lock(&gWeakMutex); {
+        const void *key = (__bridge const void *)obj;
+        CFMutableSetRef addresses = (CFMutableSetRef)CFDictionaryGetValue(gObjectToAddressesMap, key);
+        if (addresses == NULL) {
+            addresses = CFSetCreateMutable(NULL, 0, NULL);
+            CFDictionarySetValue(gObjectToAddressesMap, key, addresses);
+            CFRelease(addresses);
+        }
+
+        CFSetAddValue(addresses, location);
+
+        EnsureDeallocationTrigger(obj);
+    } pthread_mutex_unlock(&gWeakMutex);
 }
 
 static void PLUnregisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
     WeakInit();
 
     pthread_mutex_lock(&gWeakMutex); {
-        CFMutableSetRef addresses = CFDictionaryGetValue(gObjectToAddressesMap, (__bridge const void *)*location);
+        CFMutableSetRef addresses = (CFMutableSetRef)CFDictionaryGetValue(gObjectToAddressesMap, (__bridge const void *)*location);
         if (addresses != NULL)
             CFSetRemoveValue(addresses, location);
     } pthread_mutex_unlock(&gWeakMutex);
@@ -145,4 +161,8 @@ static void WeakInit(void) {
 
         gObjectToAddressesMap = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
     });
+}
+
+static void EnsureDeallocationTrigger(__unsafe_unretained id obj) {
+
 }
