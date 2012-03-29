@@ -18,6 +18,7 @@
 		C2CB834A1523D8F300E8ABFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
 		C2CB83521523D8F400E8ABFC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C2CB83501523D8F400E8ABFC /* InfoPlist.strings */; };
 		C2CB83551523D8F400E8ABFC /* PLWeakCompatibilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB83541523D8F400E8ABFC /* PLWeakCompatibilityTests.m */; };
+		C2CB83601523D91500E8ABFC /* PLWeakCompatibilityStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,18 +36,20 @@
 		C2CB832F1523D8F300E8ABFC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C2CB83311523D8F300E8ABFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C2CB83331523D8F300E8ABFC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		C2CB83371523D8F300E8ABFC /* PLWeakCompatibility-Info.plist */ = {isa = PBXFileReference; path = "PLWeakCompatibility-Info.plist"; sourceTree = "<group>"; };
+		C2CB83371523D8F300E8ABFC /* PLWeakCompatibility-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PLWeakCompatibility-Info.plist"; sourceTree = "<group>"; };
 		C2CB83391523D8F300E8ABFC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C2CB833B1523D8F300E8ABFC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		C2CB833D1523D8F300E8ABFC /* PLWeakCompatibility-Prefix.pch */ = {isa = PBXFileReference; path = "PLWeakCompatibility-Prefix.pch"; sourceTree = "<group>"; };
-		C2CB833E1523D8F300E8ABFC /* PLAppDelegate.h */ = {isa = PBXFileReference; path = PLAppDelegate.h; sourceTree = "<group>"; };
+		C2CB833D1523D8F300E8ABFC /* PLWeakCompatibility-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PLWeakCompatibility-Prefix.pch"; sourceTree = "<group>"; };
+		C2CB833E1523D8F300E8ABFC /* PLAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PLAppDelegate.h; sourceTree = "<group>"; };
 		C2CB833F1523D8F300E8ABFC /* PLAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PLAppDelegate.m; sourceTree = "<group>"; };
 		C2CB83461523D8F300E8ABFC /* PLWeakCompatibilityTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PLWeakCompatibilityTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2CB83471523D8F300E8ABFC /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		C2CB834F1523D8F400E8ABFC /* PLWeakCompatibilityTests-Info.plist */ = {isa = PBXFileReference; path = "PLWeakCompatibilityTests-Info.plist"; sourceTree = "<group>"; };
+		C2CB834F1523D8F400E8ABFC /* PLWeakCompatibilityTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PLWeakCompatibilityTests-Info.plist"; sourceTree = "<group>"; };
 		C2CB83511523D8F400E8ABFC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		C2CB83531523D8F400E8ABFC /* PLWeakCompatibilityTests.h */ = {isa = PBXFileReference; path = PLWeakCompatibilityTests.h; sourceTree = "<group>"; };
+		C2CB83531523D8F400E8ABFC /* PLWeakCompatibilityTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PLWeakCompatibilityTests.h; sourceTree = "<group>"; };
 		C2CB83541523D8F400E8ABFC /* PLWeakCompatibilityTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PLWeakCompatibilityTests.m; sourceTree = "<group>"; };
+		C2CB835E1523D91500E8ABFC /* PLWeakCompatibilityStubs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLWeakCompatibilityStubs.h; sourceTree = "<group>"; };
+		C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLWeakCompatibilityStubs.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +111,8 @@
 			children = (
 				C2CB833E1523D8F300E8ABFC /* PLAppDelegate.h */,
 				C2CB833F1523D8F300E8ABFC /* PLAppDelegate.m */,
+				C2CB835E1523D91500E8ABFC /* PLWeakCompatibilityStubs.h */,
+				C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */,
 				C2CB83361523D8F300E8ABFC /* Supporting Files */,
 			);
 			path = PLWeakCompatibility;
@@ -251,6 +256,7 @@
 			files = (
 				C2CB833C1523D8F300E8ABFC /* main.m in Sources */,
 				C2CB83401523D8F300E8ABFC /* PLAppDelegate.m in Sources */,
+				C2CB83601523D91500E8ABFC /* PLWeakCompatibilityStubs.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,6 +351,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PLWeakCompatibility/PLWeakCompatibility-Prefix.pch";
 				INFOPLIST_FILE = "PLWeakCompatibility/PLWeakCompatibility-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				"OTHER_CFLAGS[arch=*]" = (
+					"-Xclang",
+					"-fobjc-runtime-has-weak",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -356,6 +367,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PLWeakCompatibility/PLWeakCompatibility-Prefix.pch";
 				INFOPLIST_FILE = "PLWeakCompatibility/PLWeakCompatibility-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				"OTHER_CFLAGS[arch=*]" = (
+					"-Xclang",
+					"-fobjc-runtime-has-weak",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
