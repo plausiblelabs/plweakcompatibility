@@ -10,6 +10,7 @@
 
 typedef void *PLObjectPtr;
 
+#if !EXCLUDE_STUB_PROTOTYPES
 PLObjectPtr objc_loadWeakRetained(PLObjectPtr *location);
 PLObjectPtr objc_initWeak(PLObjectPtr *addr, PLObjectPtr val);
 void objc_destroyWeak(PLObjectPtr *addr);
@@ -17,6 +18,7 @@ void objc_copyWeak(PLObjectPtr *to, PLObjectPtr *from);
 void objc_moveWeak(PLObjectPtr *to, PLObjectPtr *from);
 PLObjectPtr objc_loadWeak(PLObjectPtr *location);
 PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj);
+#endif
 
 void PLWeakCompatibilitySetMAZWREnabled(BOOL enabled);
 void PLWeakCompatibilitySetFallthroughEnabled(BOOL enabled);
