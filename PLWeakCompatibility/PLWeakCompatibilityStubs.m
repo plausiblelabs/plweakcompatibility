@@ -13,7 +13,8 @@
 
 
 // Runtime (or ARC compatibility) prototypes we use here.
-id objc_autorelease(id obj);
+__unsafe_unretained id objc_autorelease(__unsafe_unretained id obj);
+__unsafe_unretained id objc_retain(__unsafe_unretained id obj);
 
 // Primitive functions used to implement all weak stubs
 static __unsafe_unretained id PLLoadWeakRetained(__unsafe_unretained id *location);
@@ -75,12 +76,11 @@ __unsafe_unretained id objc_loadWeak(__unsafe_unretained id *location) {
 __unsafe_unretained id objc_storeWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
     NEXT(objc_storeWeak, location, obj);
 
-    if (*location != nil)
-        PLUnregisterWeak(location, obj);
+    PLUnregisterWeak(location, obj);
 
     *location = obj;
 
-    if (*location != nil)
+    if (obj != nil)
         PLRegisterWeak(location, obj);
 
     return obj;
@@ -94,7 +94,7 @@ __unsafe_unretained id objc_storeWeak(__unsafe_unretained id *location, __unsafe
 // This mutex protects all shared state
 static pthread_mutex_t gWeakMutex;
 
-// A map from objects to CFMutableArrays containing weak addresses
+// A map from objects to CFMutableSets containing weak addresses
 static CFMutableDictionaryRef gObjectToAddressesMap;
 
 // Ensure everything is properly initialized
@@ -108,7 +108,14 @@ static void WeakInit(void);
 static __unsafe_unretained id PLLoadWeakRetained(__unsafe_unretained id *location) {
     WeakInit();
 
-    return nil;
+    __unsafe_unretained id obj;
+    pthread_mutex_lock(&gWeakMutex); {
+        obj = *location;
+        objc_retain(obj);
+    }
+    pthread_mutex_unlock(&gWeakMutex);
+
+    return obj;
 }
 
 static void PLRegisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
@@ -118,6 +125,12 @@ static void PLRegisterWeak(__unsafe_unretained id *location, __unsafe_unretained
 
 static void PLUnregisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
     WeakInit();
+
+    pthread_mutex_lock(&gWeakMutex); {
+        CFMutableSetRef addresses = CFDictionaryGetValue(gObjectToAddressesMap, (__bridge const void *)*location);
+        if (addresses != NULL)
+            CFSetRemoveValue(addresses, location);
+    } pthread_mutex_unlock(&gWeakMutex);
 }
 
 
@@ -128,13 +141,7 @@ static void PLUnregisterWeak(__unsafe_unretained id *location, __unsafe_unretain
 static void WeakInit(void) {
     static dispatch_once_t pred;
     dispatch_once(&pred, ^{
-        pthread_mutexattr_t attr;
-        pthread_mutexattr_init(&attr);
-        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-
-        pthread_mutex_init(&gWeakMutex, &attr);
-
-        pthread_mutexattr_destroy(&attr);
+        pthread_mutex_init(&gWeakMutex, NULL);
 
         gObjectToAddressesMap = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
     });
