@@ -19,7 +19,9 @@ id objc_autorelease(id obj);
 
 #if ALLOW_FALLTHROUGH
     #define NEXT(name, ...) do { \
-            __typeof__(&name) fptr = dlsym(RTLD_NEXT, #name); \
+            static dispatch_once_t fptrOnce; \
+            static __typeof__(&name) fptr; \
+            dispatch_once(&fptrOnce, ^{ fptr = dlsym(RTLD_NEXT, #name); });\
             if (fptr != NULL) \
                 return fptr(__VA_ARGS__); \
         } while(0)
