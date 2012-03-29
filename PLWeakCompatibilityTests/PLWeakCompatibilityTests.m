@@ -8,25 +8,30 @@
 
 #import "PLWeakCompatibilityTests.h"
 
+#import "PLWeakCompatibilityStubs.h"
+
+
 @implementation PLWeakCompatibilityTests
 
-- (void)setUp
-{
-    [super setUp];
-    
-    // Set-up code here.
+- (void) reallyTestBasics {
+    __weak id weakObj;
+
+    @autoreleasepool {
+        id obj = [[NSObject alloc] init];
+        weakObj = obj;
+        STAssertNotNil(weakObj, @"Weak pointer should not be nil");
+
+        obj = nil;
+    }
+
+    STAssertNil(weakObj, @"Weak pointer should be nil after destroying the object");
 }
 
-- (void)tearDown
-{
-    // Tear-down code here.
-    
-    [super tearDown];
-}
-
-- (void)testExample
-{
-    STFail(@"Unit tests are not implemented yet in PLWeakCompatibilityTests");
+- (void) testBasics {
+    PLWeakCompatibilitySetFallthroughEnabled(YES);
+    [self reallyTestBasics];
+    PLWeakCompatibilitySetFallthroughEnabled(NO);
+    [self reallyTestBasics];
 }
 
 @end

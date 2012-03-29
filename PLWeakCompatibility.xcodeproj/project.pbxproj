@@ -51,6 +51,7 @@
 		053888761523FFC300CDC1DF /* PLWeakCompatibilityStubs.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CB835E1523D91500E8ABFC /* PLWeakCompatibilityStubs.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		053888771523FFC700CDC1DF /* PLWeakCompatibilityStubs.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CB835E1523D91500E8ABFC /* PLWeakCompatibilityStubs.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		053888811524028F00CDC1DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
+		C26653231524DA8B0076E2EA /* PLWeakCompatibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 053887991523F6CD00CDC1DF /* PLWeakCompatibility.framework */; };
 		C2CB83481523D8F300E8ABFC /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83471523D8F300E8ABFC /* SenTestingKit.framework */; };
 		C2CB834A1523D8F300E8ABFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
 		C2CB83521523D8F400E8ABFC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C2CB83501523D8F400E8ABFC /* InfoPlist.strings */; };
@@ -212,6 +213,7 @@
 			files = (
 				C2CB83481523D8F300E8ABFC /* SenTestingKit.framework in Frameworks */,
 				C2CB834A1523D8F300E8ABFC /* Foundation.framework in Frameworks */,
+				C26653231524DA8B0076E2EA /* PLWeakCompatibility.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1024,6 +1026,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				"OTHER_CFLAGS[arch=*]" = (
+					"-Xclang",
+					"-fobjc-runtime-has-weak",
+				);
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -1044,6 +1050,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"OTHER_CFLAGS[arch=*]" = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"-Xclang",
+					"-fobjc-runtime-has-weak",
+				);
 				SDKROOT = macosx;
 				VALIDATE_PRODUCT = YES;
 			};
