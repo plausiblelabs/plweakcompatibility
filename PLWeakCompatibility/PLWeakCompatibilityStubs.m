@@ -35,7 +35,7 @@ static inline boolean_t has_mazwr () {
 
 // Minimal MAZWR API that we rely on
 @interface MAZeroingWeakRef : NSObject
-+ (PLObjectPtr) refWithTarget: (PLObjectPtr) target;
++ (id) initWithTarget: (PLObjectPtr) target;
 - (PLObjectPtr) target;
 @end
 
@@ -110,7 +110,13 @@ PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj) {
     NEXT(objc_storeWeak, location, obj);
 
     if (has_mazwr()) {
-        *location = [MAZWR refWithTarget: obj];
+        if (obj != nil) {
+            MAZeroingWeakRef *ref = [[MAZWR alloc] initWithTarget: obj];
+            *location = (__bridge_retained void *) ref;
+        } else {
+            objc_autorelease(*location);
+            *location = nil;
+        }
         return obj;
     }
 
