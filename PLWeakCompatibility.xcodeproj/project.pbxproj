@@ -6,43 +6,109 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		0538881A1523F77200CDC1DF /* PLWeakCompatibility */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 0538881B1523F77200CDC1DF /* Build configuration list for PBXAggregateTarget "PLWeakCompatibility" */;
+			buildPhases = (
+			);
+			dependencies = (
+				0538881F1523F77800CDC1DF /* PBXTargetDependency */,
+				053888211523F77900CDC1DF /* PBXTargetDependency */,
+			);
+			name = PLWeakCompatibility;
+			productName = PLWeakCompatibility;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
-		C2CB83301523D8F300E8ABFC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB832F1523D8F300E8ABFC /* UIKit.framework */; };
-		C2CB83321523D8F300E8ABFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
-		C2CB83341523D8F300E8ABFC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83331523D8F300E8ABFC /* CoreGraphics.framework */; };
-		C2CB833A1523D8F300E8ABFC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C2CB83381523D8F300E8ABFC /* InfoPlist.strings */; };
-		C2CB833C1523D8F300E8ABFC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB833B1523D8F300E8ABFC /* main.m */; };
-		C2CB83401523D8F300E8ABFC /* PLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB833F1523D8F300E8ABFC /* PLAppDelegate.m */; };
+		0538879B1523F6CD00CDC1DF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0538879A1523F6CD00CDC1DF /* Cocoa.framework */; };
+		053887B41523F6E400CDC1DF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0538879A1523F6CD00CDC1DF /* Cocoa.framework */; };
+		053887C71523F6F700CDC1DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
+		053887D41523F6F700CDC1DF /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83471523D8F300E8ABFC /* SenTestingKit.framework */; };
+		053887D51523F6F700CDC1DF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB832F1523D8F300E8ABFC /* UIKit.framework */; };
+		053887D61523F6F700CDC1DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
+		053887D91523F6F700CDC1DF /* libPLWeakCompatibility-iOS-Device.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 053887C61523F6F700CDC1DF /* libPLWeakCompatibility-iOS-Device.a */; };
+		053887EE1523F72900CDC1DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
+		053887FB1523F72900CDC1DF /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83471523D8F300E8ABFC /* SenTestingKit.framework */; };
+		053887FC1523F72900CDC1DF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB832F1523D8F300E8ABFC /* UIKit.framework */; };
+		053887FD1523F72900CDC1DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
+		053888001523F72900CDC1DF /* libPLWeakCompatibility-iOS-Simulator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 053887ED1523F72900CDC1DF /* libPLWeakCompatibility-iOS-Simulator.a */; };
+		053888261523F7A500CDC1DF /* PLWeakCompatibilityStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */; };
+		053888271523F7A900CDC1DF /* PLWeakCompatibilityStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */; };
+		053888291523F98C00CDC1DF /* PLWeakCompatibilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB83541523D8F400E8ABFC /* PLWeakCompatibilityTests.m */; };
+		0538882A1523F98F00CDC1DF /* PLWeakCompatibilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB83541523D8F400E8ABFC /* PLWeakCompatibilityTests.m */; };
+		0538882F1523FAC000CDC1DF /* PLWeakCompatibilityStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */; };
 		C2CB83481523D8F300E8ABFC /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83471523D8F300E8ABFC /* SenTestingKit.framework */; };
-		C2CB83491523D8F300E8ABFC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB832F1523D8F300E8ABFC /* UIKit.framework */; };
 		C2CB834A1523D8F300E8ABFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
 		C2CB83521523D8F400E8ABFC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C2CB83501523D8F400E8ABFC /* InfoPlist.strings */; };
 		C2CB83551523D8F400E8ABFC /* PLWeakCompatibilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB83541523D8F400E8ABFC /* PLWeakCompatibilityTests.m */; };
-		C2CB83601523D91500E8ABFC /* PLWeakCompatibilityStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		C2CB834B1523D8F400E8ABFC /* PBXContainerItemProxy */ = {
+		053887D71523F6F700CDC1DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2CB83221523D8F300E8ABFC /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = C2CB832A1523D8F300E8ABFC;
-			remoteInfo = PLWeakCompatibility;
+			remoteGlobalIDString = 053887C51523F6F700CDC1DF;
+			remoteInfo = "PLWeakCompatibility-iOS-Device";
+		};
+		053887FE1523F72900CDC1DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2CB83221523D8F300E8ABFC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 053887EC1523F72900CDC1DF;
+			remoteInfo = "PLWeakCompatibility-iOS-Simulator";
+		};
+		0538881E1523F77800CDC1DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2CB83221523D8F300E8ABFC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 053887981523F6CD00CDC1DF;
+			remoteInfo = "PLWeakCompatibility-MacOSX";
+		};
+		053888201523F77900CDC1DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2CB83221523D8F300E8ABFC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 053887B21523F6E400CDC1DF;
+			remoteInfo = "PLWeakCompatibility-iOS";
+		};
+		053888221523F78000CDC1DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2CB83221523D8F300E8ABFC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 053887C51523F6F700CDC1DF;
+			remoteInfo = "PLWeakCompatibility-iOS-Device";
+		};
+		053888241523F78100CDC1DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2CB83221523D8F300E8ABFC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 053887EC1523F72900CDC1DF;
+			remoteInfo = "PLWeakCompatibility-iOS-Simulator";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C2CB832B1523D8F300E8ABFC /* PLWeakCompatibility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PLWeakCompatibility.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		053887991523F6CD00CDC1DF /* PLWeakCompatibility.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PLWeakCompatibility.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0538879A1523F6CD00CDC1DF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		0538879D1523F6CD00CDC1DF /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		0538879E1523F6CD00CDC1DF /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		0538879F1523F6CD00CDC1DF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		053887B31523F6E400CDC1DF /* PLWeakCompatibility.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PLWeakCompatibility.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		053887C61523F6F700CDC1DF /* libPLWeakCompatibility-iOS-Device.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPLWeakCompatibility-iOS-Device.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		053887D31523F6F700CDC1DF /* PLWeakCompatibility-iOS-Device-Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PLWeakCompatibility-iOS-Device-Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		053887ED1523F72900CDC1DF /* libPLWeakCompatibility-iOS-Simulator.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPLWeakCompatibility-iOS-Simulator.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		053887FA1523F72900CDC1DF /* PLWeakCompatibility-iOS-Simulator-Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PLWeakCompatibility-iOS-Simulator-Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		053888281523F7EA00CDC1DF /* PLWeakCompatibility-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PLWeakCompatibility-Info.plist"; sourceTree = "<group>"; };
 		C2CB832F1523D8F300E8ABFC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C2CB83311523D8F300E8ABFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C2CB83331523D8F300E8ABFC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		C2CB83371523D8F300E8ABFC /* PLWeakCompatibility-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PLWeakCompatibility-Info.plist"; sourceTree = "<group>"; };
 		C2CB83391523D8F300E8ABFC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C2CB833B1523D8F300E8ABFC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C2CB833D1523D8F300E8ABFC /* PLWeakCompatibility-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PLWeakCompatibility-Prefix.pch"; sourceTree = "<group>"; };
-		C2CB833E1523D8F300E8ABFC /* PLAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PLAppDelegate.h; sourceTree = "<group>"; };
-		C2CB833F1523D8F300E8ABFC /* PLAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PLAppDelegate.m; sourceTree = "<group>"; };
-		C2CB83461523D8F300E8ABFC /* PLWeakCompatibilityTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PLWeakCompatibilityTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2CB83461523D8F300E8ABFC /* PLWeakCompatibility-MacOSX-Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PLWeakCompatibility-MacOSX-Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2CB83471523D8F300E8ABFC /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		C2CB834F1523D8F400E8ABFC /* PLWeakCompatibilityTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PLWeakCompatibilityTests-Info.plist"; sourceTree = "<group>"; };
 		C2CB83511523D8F400E8ABFC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -53,13 +119,57 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		C2CB83281523D8F300E8ABFC /* Frameworks */ = {
+		053887951523F6CD00CDC1DF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2CB83301523D8F300E8ABFC /* UIKit.framework in Frameworks */,
-				C2CB83321523D8F300E8ABFC /* Foundation.framework in Frameworks */,
-				C2CB83341523D8F300E8ABFC /* CoreGraphics.framework in Frameworks */,
+				0538879B1523F6CD00CDC1DF /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887AF1523F6E400CDC1DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				053887B41523F6E400CDC1DF /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887C31523F6F700CDC1DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				053887C71523F6F700CDC1DF /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887CF1523F6F700CDC1DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				053887D41523F6F700CDC1DF /* SenTestingKit.framework in Frameworks */,
+				053887D51523F6F700CDC1DF /* UIKit.framework in Frameworks */,
+				053887D61523F6F700CDC1DF /* Foundation.framework in Frameworks */,
+				053887D91523F6F700CDC1DF /* libPLWeakCompatibility-iOS-Device.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887EA1523F72900CDC1DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				053887EE1523F72900CDC1DF /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887F61523F72900CDC1DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				053887FB1523F72900CDC1DF /* SenTestingKit.framework in Frameworks */,
+				053887FC1523F72900CDC1DF /* UIKit.framework in Frameworks */,
+				053887FD1523F72900CDC1DF /* Foundation.framework in Frameworks */,
+				053888001523F72900CDC1DF /* libPLWeakCompatibility-iOS-Simulator.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,7 +178,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2CB83481523D8F300E8ABFC /* SenTestingKit.framework in Frameworks */,
-				C2CB83491523D8F300E8ABFC /* UIKit.framework in Frameworks */,
 				C2CB834A1523D8F300E8ABFC /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -76,6 +185,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0538879C1523F6CD00CDC1DF /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0538879D1523F6CD00CDC1DF /* AppKit.framework */,
+				0538879E1523F6CD00CDC1DF /* CoreData.framework */,
+				0538879F1523F6CD00CDC1DF /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
 		C2CB83201523D8F300E8ABFC = {
 			isa = PBXGroup;
 			children = (
@@ -89,8 +208,13 @@
 		C2CB832C1523D8F300E8ABFC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C2CB832B1523D8F300E8ABFC /* PLWeakCompatibility.app */,
-				C2CB83461523D8F300E8ABFC /* PLWeakCompatibilityTests.octest */,
+				C2CB83461523D8F300E8ABFC /* PLWeakCompatibility-MacOSX-Tests.octest */,
+				053887991523F6CD00CDC1DF /* PLWeakCompatibility.framework */,
+				053887B31523F6E400CDC1DF /* PLWeakCompatibility.framework */,
+				053887C61523F6F700CDC1DF /* libPLWeakCompatibility-iOS-Device.a */,
+				053887D31523F6F700CDC1DF /* PLWeakCompatibility-iOS-Device-Tests.octest */,
+				053887ED1523F72900CDC1DF /* libPLWeakCompatibility-iOS-Simulator.a */,
+				053887FA1523F72900CDC1DF /* PLWeakCompatibility-iOS-Simulator-Tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,6 +226,8 @@
 				C2CB83311523D8F300E8ABFC /* Foundation.framework */,
 				C2CB83331523D8F300E8ABFC /* CoreGraphics.framework */,
 				C2CB83471523D8F300E8ABFC /* SenTestingKit.framework */,
+				0538879A1523F6CD00CDC1DF /* Cocoa.framework */,
+				0538879C1523F6CD00CDC1DF /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -109,8 +235,6 @@
 		C2CB83351523D8F300E8ABFC /* PLWeakCompatibility */ = {
 			isa = PBXGroup;
 			children = (
-				C2CB833E1523D8F300E8ABFC /* PLAppDelegate.h */,
-				C2CB833F1523D8F300E8ABFC /* PLAppDelegate.m */,
 				C2CB835E1523D91500E8ABFC /* PLWeakCompatibilityStubs.h */,
 				C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */,
 				C2CB83361523D8F300E8ABFC /* Supporting Files */,
@@ -121,7 +245,7 @@
 		C2CB83361523D8F300E8ABFC /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				C2CB83371523D8F300E8ABFC /* PLWeakCompatibility-Info.plist */,
+				053888281523F7EA00CDC1DF /* PLWeakCompatibility-Info.plist */,
 				C2CB83381523D8F300E8ABFC /* InfoPlist.strings */,
 				C2CB833B1523D8F300E8ABFC /* main.m */,
 				C2CB833D1523D8F300E8ABFC /* PLWeakCompatibility-Prefix.pch */,
@@ -150,27 +274,151 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		053887961523F6CD00CDC1DF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887B01523F6E400CDC1DF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887C41523F6F700CDC1DF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887EB1523F72900CDC1DF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
-		C2CB832A1523D8F300E8ABFC /* PLWeakCompatibility */ = {
+		053887981523F6CD00CDC1DF /* PLWeakCompatibility-MacOSX */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C2CB83581523D8F400E8ABFC /* Build configuration list for PBXNativeTarget "PLWeakCompatibility" */;
+			buildConfigurationList = 053887AC1523F6CD00CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-MacOSX" */;
 			buildPhases = (
-				C2CB83271523D8F300E8ABFC /* Sources */,
-				C2CB83281523D8F300E8ABFC /* Frameworks */,
-				C2CB83291523D8F300E8ABFC /* Resources */,
+				053887941523F6CD00CDC1DF /* Sources */,
+				053887951523F6CD00CDC1DF /* Frameworks */,
+				053887961523F6CD00CDC1DF /* Headers */,
+				053887971523F6CD00CDC1DF /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = PLWeakCompatibility;
-			productName = PLWeakCompatibility;
-			productReference = C2CB832B1523D8F300E8ABFC /* PLWeakCompatibility.app */;
-			productType = "com.apple.product-type.application";
+			name = "PLWeakCompatibility-MacOSX";
+			productName = "PLWeakCompatibility-MacOSX";
+			productReference = 053887991523F6CD00CDC1DF /* PLWeakCompatibility.framework */;
+			productType = "com.apple.product-type.framework";
 		};
-		C2CB83451523D8F300E8ABFC /* PLWeakCompatibilityTests */ = {
+		053887B21523F6E400CDC1DF /* PLWeakCompatibility-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C2CB835B1523D8F400E8ABFC /* Build configuration list for PBXNativeTarget "PLWeakCompatibilityTests" */;
+			buildConfigurationList = 053887BF1523F6E400CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-iOS" */;
+			buildPhases = (
+				053887AE1523F6E400CDC1DF /* Sources */,
+				053887AF1523F6E400CDC1DF /* Frameworks */,
+				053887B01523F6E400CDC1DF /* Headers */,
+				053887B11523F6E400CDC1DF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				053888231523F78000CDC1DF /* PBXTargetDependency */,
+				053888251523F78100CDC1DF /* PBXTargetDependency */,
+			);
+			name = "PLWeakCompatibility-iOS";
+			productName = "PLWeakCompatibility-iOS";
+			productReference = 053887B31523F6E400CDC1DF /* PLWeakCompatibility.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		053887C51523F6F700CDC1DF /* PLWeakCompatibility-iOS-Device */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 053887E31523F6F700CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-iOS-Device" */;
+			buildPhases = (
+				053887C21523F6F700CDC1DF /* Sources */,
+				053887C31523F6F700CDC1DF /* Frameworks */,
+				053887C41523F6F700CDC1DF /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PLWeakCompatibility-iOS-Device";
+			productName = "PLWeakCompatibility-iOS-Device";
+			productReference = 053887C61523F6F700CDC1DF /* libPLWeakCompatibility-iOS-Device.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		053887D21523F6F700CDC1DF /* PLWeakCompatibility-iOS-Device-Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 053887E61523F6F700CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-iOS-Device-Tests" */;
+			buildPhases = (
+				053887CE1523F6F700CDC1DF /* Sources */,
+				053887CF1523F6F700CDC1DF /* Frameworks */,
+				053887D01523F6F700CDC1DF /* Resources */,
+				053887D11523F6F700CDC1DF /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				053887D81523F6F700CDC1DF /* PBXTargetDependency */,
+			);
+			name = "PLWeakCompatibility-iOS-Device-Tests";
+			productName = "PLWeakCompatibility-iOS-DeviceTests";
+			productReference = 053887D31523F6F700CDC1DF /* PLWeakCompatibility-iOS-Device-Tests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+		053887EC1523F72900CDC1DF /* PLWeakCompatibility-iOS-Simulator */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0538880A1523F72900CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-iOS-Simulator" */;
+			buildPhases = (
+				053887E91523F72900CDC1DF /* Sources */,
+				053887EA1523F72900CDC1DF /* Frameworks */,
+				053887EB1523F72900CDC1DF /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PLWeakCompatibility-iOS-Simulator";
+			productName = "PLWeakCompatibility-iOS-Simulator";
+			productReference = 053887ED1523F72900CDC1DF /* libPLWeakCompatibility-iOS-Simulator.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		053887F91523F72900CDC1DF /* PLWeakCompatibility-iOS-Simulator-Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0538880D1523F72900CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-iOS-Simulator-Tests" */;
+			buildPhases = (
+				053887F51523F72900CDC1DF /* Sources */,
+				053887F61523F72900CDC1DF /* Frameworks */,
+				053887F71523F72900CDC1DF /* Resources */,
+				053887F81523F72900CDC1DF /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				053887FF1523F72900CDC1DF /* PBXTargetDependency */,
+			);
+			name = "PLWeakCompatibility-iOS-Simulator-Tests";
+			productName = "PLWeakCompatibility-iOS-SimulatorTests";
+			productReference = 053887FA1523F72900CDC1DF /* PLWeakCompatibility-iOS-Simulator-Tests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+		C2CB83451523D8F300E8ABFC /* PLWeakCompatibility-MacOSX-Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2CB835B1523D8F400E8ABFC /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-MacOSX-Tests" */;
 			buildPhases = (
 				C2CB83411523D8F300E8ABFC /* Sources */,
 				C2CB83421523D8F300E8ABFC /* Frameworks */,
@@ -180,11 +428,10 @@
 			buildRules = (
 			);
 			dependencies = (
-				C2CB834C1523D8F400E8ABFC /* PBXTargetDependency */,
 			);
-			name = PLWeakCompatibilityTests;
+			name = "PLWeakCompatibility-MacOSX-Tests";
 			productName = PLWeakCompatibilityTests;
-			productReference = C2CB83461523D8F300E8ABFC /* PLWeakCompatibilityTests.octest */;
+			productReference = C2CB83461523D8F300E8ABFC /* PLWeakCompatibility-MacOSX-Tests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -208,18 +455,44 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C2CB832A1523D8F300E8ABFC /* PLWeakCompatibility */,
-				C2CB83451523D8F300E8ABFC /* PLWeakCompatibilityTests */,
+				0538881A1523F77200CDC1DF /* PLWeakCompatibility */,
+				053887981523F6CD00CDC1DF /* PLWeakCompatibility-MacOSX */,
+				053887B21523F6E400CDC1DF /* PLWeakCompatibility-iOS */,
+				053887C51523F6F700CDC1DF /* PLWeakCompatibility-iOS-Device */,
+				053887EC1523F72900CDC1DF /* PLWeakCompatibility-iOS-Simulator */,
+				C2CB83451523D8F300E8ABFC /* PLWeakCompatibility-MacOSX-Tests */,
+				053887D21523F6F700CDC1DF /* PLWeakCompatibility-iOS-Device-Tests */,
+				053887F91523F72900CDC1DF /* PLWeakCompatibility-iOS-Simulator-Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		C2CB83291523D8F300E8ABFC /* Resources */ = {
+		053887971523F6CD00CDC1DF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2CB833A1523D8F300E8ABFC /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887B11523F6E400CDC1DF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887D01523F6F700CDC1DF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887F71523F72900CDC1DF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,6 +507,32 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		053887D11523F6F700CDC1DF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		053887F81523F72900CDC1DF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
 		C2CB83441523D8F300E8ABFC /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -250,13 +549,50 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		C2CB83271523D8F300E8ABFC /* Sources */ = {
+		053887941523F6CD00CDC1DF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2CB833C1523D8F300E8ABFC /* main.m in Sources */,
-				C2CB83401523D8F300E8ABFC /* PLAppDelegate.m in Sources */,
-				C2CB83601523D91500E8ABFC /* PLWeakCompatibilityStubs.m in Sources */,
+				053888261523F7A500CDC1DF /* PLWeakCompatibilityStubs.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887AE1523F6E400CDC1DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887C21523F6F700CDC1DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				053888271523F7A900CDC1DF /* PLWeakCompatibilityStubs.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887CE1523F6F700CDC1DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				053888291523F98C00CDC1DF /* PLWeakCompatibilityTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887E91523F72900CDC1DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0538882F1523FAC000CDC1DF /* PLWeakCompatibilityStubs.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		053887F51523F72900CDC1DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0538882A1523F98F00CDC1DF /* PLWeakCompatibilityTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,10 +607,35 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		C2CB834C1523D8F400E8ABFC /* PBXTargetDependency */ = {
+		053887D81523F6F700CDC1DF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C2CB832A1523D8F300E8ABFC /* PLWeakCompatibility */;
-			targetProxy = C2CB834B1523D8F400E8ABFC /* PBXContainerItemProxy */;
+			target = 053887C51523F6F700CDC1DF /* PLWeakCompatibility-iOS-Device */;
+			targetProxy = 053887D71523F6F700CDC1DF /* PBXContainerItemProxy */;
+		};
+		053887FF1523F72900CDC1DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 053887EC1523F72900CDC1DF /* PLWeakCompatibility-iOS-Simulator */;
+			targetProxy = 053887FE1523F72900CDC1DF /* PBXContainerItemProxy */;
+		};
+		0538881F1523F77800CDC1DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 053887981523F6CD00CDC1DF /* PLWeakCompatibility-MacOSX */;
+			targetProxy = 0538881E1523F77800CDC1DF /* PBXContainerItemProxy */;
+		};
+		053888211523F77900CDC1DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 053887B21523F6E400CDC1DF /* PLWeakCompatibility-iOS */;
+			targetProxy = 053888201523F77900CDC1DF /* PBXContainerItemProxy */;
+		};
+		053888231523F78000CDC1DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 053887C51523F6F700CDC1DF /* PLWeakCompatibility-iOS-Device */;
+			targetProxy = 053888221523F78000CDC1DF /* PBXContainerItemProxy */;
+		};
+		053888251523F78100CDC1DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 053887EC1523F72900CDC1DF /* PLWeakCompatibility-iOS-Simulator */;
+			targetProxy = 053888241523F78100CDC1DF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -298,11 +659,237 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		053887AA1523F6CD00CDC1DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "PLWeakCompatibility/PLWeakCompatibility-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = PLWeakCompatibility;
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		053887AB1523F6CD00CDC1DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "PLWeakCompatibility/PLWeakCompatibility-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = PLWeakCompatibility;
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		053887C01523F6E400CDC1DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = PLWeakCompatibility;
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		053887C11523F6E400CDC1DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = PLWeakCompatibility;
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		053887E41523F6F700CDC1DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv6,
+				);
+				DSTROOT = /tmp/PLWeakCompatibility_iOS_Device.dst;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		053887E51523F6F700CDC1DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv6,
+				);
+				DSTROOT = /tmp/PLWeakCompatibility_iOS_Device.dst;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		053887E71523F6F700CDC1DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv6,
+					armv7,
+				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = "PLWeakCompatibilityTests/PLWeakCompatibilityTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		053887E81523F6F700CDC1DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv6,
+					armv7,
+				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = "PLWeakCompatibilityTests/PLWeakCompatibilityTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+		0538880B1523F72900CDC1DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/PLWeakCompatibility_iOS_Simulator.dst;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0538880C1523F72900CDC1DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/PLWeakCompatibility_iOS_Simulator.dst;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		0538880E1523F72900CDC1DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = "PLWeakCompatibilityTests/PLWeakCompatibilityTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		0538880F1523F72900CDC1DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = "PLWeakCompatibilityTests/PLWeakCompatibilityTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+		0538881C1523F77200CDC1DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0538881D1523F77200CDC1DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		C2CB83561523D8F400E8ABFC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -318,9 +905,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -328,7 +914,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
@@ -337,59 +923,21 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				SDKROOT = macosx;
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		C2CB83591523D8F400E8ABFC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PLWeakCompatibility/PLWeakCompatibility-Prefix.pch";
-				INFOPLIST_FILE = "PLWeakCompatibility/PLWeakCompatibility-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				"OTHER_CFLAGS[arch=*]" = (
-					"-Xclang",
-					"-fobjc-runtime-has-weak",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		C2CB835A1523D8F400E8ABFC /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PLWeakCompatibility/PLWeakCompatibility-Prefix.pch";
-				INFOPLIST_FILE = "PLWeakCompatibility/PLWeakCompatibility-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				"OTHER_CFLAGS[arch=*]" = (
-					"-Xclang",
-					"-fobjc-runtime-has-weak",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
 		};
 		C2CB835C1523D8F400E8ABFC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/PLWeakCompatibility.app/PLWeakCompatibility";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PLWeakCompatibility/PLWeakCompatibility-Prefix.pch";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				INFOPLIST_FILE = "PLWeakCompatibilityTests/PLWeakCompatibilityTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
+				TEST_AFTER_BUILD = YES;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -397,16 +945,11 @@
 		C2CB835D1523D8F400E8ABFC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/PLWeakCompatibility.app/PLWeakCompatibility";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PLWeakCompatibility/PLWeakCompatibility-Prefix.pch";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				INFOPLIST_FILE = "PLWeakCompatibilityTests/PLWeakCompatibilityTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
+				TEST_AFTER_BUILD = YES;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
@@ -414,6 +957,69 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		053887AC1523F6CD00CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-MacOSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				053887AA1523F6CD00CDC1DF /* Debug */,
+				053887AB1523F6CD00CDC1DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		053887BF1523F6E400CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				053887C01523F6E400CDC1DF /* Debug */,
+				053887C11523F6E400CDC1DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		053887E31523F6F700CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-iOS-Device" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				053887E41523F6F700CDC1DF /* Debug */,
+				053887E51523F6F700CDC1DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		053887E61523F6F700CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-iOS-Device-Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				053887E71523F6F700CDC1DF /* Debug */,
+				053887E81523F6F700CDC1DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0538880A1523F72900CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-iOS-Simulator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0538880B1523F72900CDC1DF /* Debug */,
+				0538880C1523F72900CDC1DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0538880D1523F72900CDC1DF /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-iOS-Simulator-Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0538880E1523F72900CDC1DF /* Debug */,
+				0538880F1523F72900CDC1DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0538881B1523F77200CDC1DF /* Build configuration list for PBXAggregateTarget "PLWeakCompatibility" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0538881C1523F77200CDC1DF /* Debug */,
+				0538881D1523F77200CDC1DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C2CB83251523D8F300E8ABFC /* Build configuration list for PBXProject "PLWeakCompatibility" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -423,21 +1029,14 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C2CB83581523D8F400E8ABFC /* Build configuration list for PBXNativeTarget "PLWeakCompatibility" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C2CB83591523D8F400E8ABFC /* Debug */,
-				C2CB835A1523D8F400E8ABFC /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-		};
-		C2CB835B1523D8F400E8ABFC /* Build configuration list for PBXNativeTarget "PLWeakCompatibilityTests" */ = {
+		C2CB835B1523D8F400E8ABFC /* Build configuration list for PBXNativeTarget "PLWeakCompatibility-MacOSX-Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C2CB835C1523D8F400E8ABFC /* Debug */,
 				C2CB835D1523D8F400E8ABFC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

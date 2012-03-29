@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 
 // Convince ARC to leave these kids alone
 typedef void *VoidPtr;
