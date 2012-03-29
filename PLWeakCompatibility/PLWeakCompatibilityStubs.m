@@ -9,6 +9,7 @@
 #import "PLWeakCompatibilityStubs.h"
 
 #import <dlfcn.h>
+#import <pthread.h>
 
 
 // Runtime (or ARC compatibility) prototypes we use here.
@@ -85,18 +86,56 @@ __unsafe_unretained id objc_storeWeak(__unsafe_unretained id *location, __unsafe
     return obj;
 }
 
+
+////////////////////
+#pragma mark Internal Globals and Prototypes
+////////////////////
+
+// This mutex protects all shared state
+static pthread_mutex_t gWeakMutex;
+
+// A map from objects to CFMutableArrays containing weak addresses
+static CFMutableDictionaryRef gObjectToAddressesMap;
+
+// Ensure everything is properly initialized
+static void WeakInit(void);
+
+
 ////////////////////
 #pragma mark Primitive Functions
 ////////////////////
 
 static __unsafe_unretained id PLLoadWeakRetained(__unsafe_unretained id *location) {
+    WeakInit();
+
     return nil;
 }
 
 static void PLRegisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
+    WeakInit();
 
 }
 
 static void PLUnregisterWeak(__unsafe_unretained id *location, __unsafe_unretained id obj) {
+    WeakInit();
+}
 
+
+////////////////////
+#pragma mark Internal Functions
+////////////////////
+
+static void WeakInit(void) {
+    static dispatch_once_t pred;
+    dispatch_once(&pred, ^{
+        pthread_mutexattr_t attr;
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+
+        pthread_mutex_init(&gWeakMutex, &attr);
+
+        pthread_mutexattr_destroy(&attr);
+
+        gObjectToAddressesMap = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    });
 }
