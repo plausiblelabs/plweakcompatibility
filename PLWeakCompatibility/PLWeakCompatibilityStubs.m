@@ -27,48 +27,41 @@ id objc_autorelease(id obj);
     #define NEXT(name, ...) (void)0
 #endif
 
-id objc_loadWeakRetained(id *location)
-{
+id objc_loadWeakRetained(id *location) {
     NEXT(objc_loadWeakRetained, location);
     
     // TODO: this is a primitive method
     return NULL;
 }
 
-id objc_initWeak(id *addr, id val)
-{
+id objc_initWeak(id *addr, id val) {
     NEXT(objc_initWeak, addr, val);
     *addr = NULL;
     return objc_storeWeak(addr, val);
 }
 
-void objc_destroyWeak(id *addr)
-{
+void objc_destroyWeak(id *addr) {
     NEXT(objc_destroyWeak, addr);
     objc_storeWeak(addr, NULL);
 }
 
-void objc_copyWeak(id *to, id *from)
-{
+void objc_copyWeak(id *to, id *from) {
     NEXT(objc_copyWeak, to, from);
     objc_initWeak(to, objc_loadWeak(from));
 }
 
-void objc_moveWeak(id *to, id *from)
-{
+void objc_moveWeak(id *to, id *from) {
     NEXT(objc_moveWeak, to, from);
     objc_copyWeak(to, from);
     objc_destroyWeak(from);
 }
 
-id objc_loadWeak(id *location)
-{
+id objc_loadWeak(id *location) {
     NEXT(objc_loadWeak, location);
     return objc_autorelease(objc_loadWeakRetained(location));
 }
 
-id objc_storeWeak(id *location, id obj)
-{
+id objc_storeWeak(id *location, id obj) {
     NEXT(objc_storeWeak, location, obj);
     
     // TODO: this is a primitive method
