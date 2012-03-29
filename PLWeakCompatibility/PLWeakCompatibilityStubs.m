@@ -81,11 +81,6 @@ void PLWeakCompatibilitySetFallthroughEnabled(BOOL enabled) {
 PLObjectPtr objc_loadWeakRetained(PLObjectPtr *location) {
     NEXT(objc_loadWeakRetained, location);
 
-    if (has_mazwr()) {
-        MAZeroingWeakRef *mazrw = (__bridge MAZeroingWeakRef *) *location;
-        return objc_retain([mazrw target]);
-    }
-
     return PLLoadWeakRetained(location);
 }
 
@@ -118,20 +113,6 @@ PLObjectPtr objc_loadWeak(PLObjectPtr *location) {
 
 PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj) {
     NEXT(objc_storeWeak, location, obj);
-
-    if (has_mazwr()) {
-        if (*location != nil)
-            objc_release(*location);
-
-        if (obj != nil) {
-            MAZeroingWeakRef *ref = [[MAZWR alloc] initWithTarget: obj];
-            *location = (__bridge_retained PLObjectPtr) ref;
-        } else {
-            *location = nil;
-        }
-
-        return obj;
-    }
 
     PLUnregisterWeak(location, obj);
 
@@ -175,6 +156,12 @@ static SEL deallocSELSwizzled;
 ////////////////////
 
 static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location) {
+    /* Hand off to MAZWR */
+    if (has_mazwr()) {
+        MAZeroingWeakRef *mazrw = (__bridge MAZeroingWeakRef *) *location;
+        return objc_retain([mazrw target]);
+    }
+
     WeakInit();
 
     PLObjectPtr obj;
@@ -188,6 +175,13 @@ static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location) {
 }
 
 static void PLRegisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
+    /* Hand off to MAZWR */
+    if (has_mazwr()) {        
+        MAZeroingWeakRef *ref = [[MAZWR alloc] initWithTarget: obj];
+        *location = (__bridge_retained PLObjectPtr) ref;
+        return;
+    }
+
     WeakInit();
 
     pthread_mutex_lock(&gWeakMutex); {
@@ -205,6 +199,13 @@ static void PLRegisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
 }
 
 static void PLUnregisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
+    /* Hand off to MAZWR */
+    if (has_mazwr()) {
+        if (*location != nil)
+            objc_release(*location);
+        return;
+    }
+
     WeakInit();
 
     pthread_mutex_lock(&gWeakMutex); {
