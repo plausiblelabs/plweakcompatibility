@@ -49,6 +49,7 @@ void PLWeakCompatibilitySetMAZWREnabled(BOOL enabled) {
 
 
 // Runtime (or ARC compatibility) prototypes we use here.
+PLObjectPtr objc_release(PLObjectPtr obj);
 PLObjectPtr objc_autorelease(PLObjectPtr obj);
 PLObjectPtr objc_retain(PLObjectPtr obj);
 Class object_getClass(PLObjectPtr obj);
@@ -120,7 +121,7 @@ PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj) {
 
     if (has_mazwr()) {
         if (*location != nil)
-            objc_autorelease(*location);
+            objc_release(*location);
 
         if (obj != nil) {
             MAZeroingWeakRef *ref = [[MAZWR alloc] initWithTarget: obj];
