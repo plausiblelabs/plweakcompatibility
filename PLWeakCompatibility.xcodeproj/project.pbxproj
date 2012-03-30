@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0501743815264999001DFA82 /* MAZeroingWeakRef.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8AC00 /* MAZeroingWeakRef.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		0501743F15265D2B001DFA82 /* MAZeroingWeakRef.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8AC00 /* MAZeroingWeakRef.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		05286A981524D85F00FD0AD7 /* PLWeakCompatibilityStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */; };
 		053887C71523F6F700CDC1DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
 		053888261523F7A500CDC1DF /* PLWeakCompatibilityStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFC /* PLWeakCompatibilityStubs.m */; };
@@ -26,7 +26,6 @@
 		0573A96F1526484200D0D884 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0573A96D1526484200D0D884 /* InfoPlist.strings */; };
 		0573A97B1526485600D0D884 /* libPLWeakCompatibility-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 053887C61523F6F700CDC1DF /* libPLWeakCompatibility-iOS.a */; };
 		0573A97C1526486A00D0D884 /* PLWeakCompatibilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB83541523D8F400E8ABFC /* PLWeakCompatibilityTests.m */; };
-		0573A97F152648E600D0D884 /* libPLWeakCompatibility-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 053887C61523F6F700CDC1DF /* libPLWeakCompatibility-iOS.a */; };
 		C26653231524DA8B0076E2EA /* PLWeakCompatibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 053887991523F6CD00CDC1DF /* PLWeakCompatibility.framework */; };
 		C2CB83481523D8F300E8ABFC /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83471523D8F300E8ABFC /* SenTestingKit.framework */; };
 		C2CB834A1523D8F300E8ABFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CB83311523D8F300E8ABFC /* Foundation.framework */; };
@@ -145,7 +144,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0573A97F152648E600D0D884 /* libPLWeakCompatibility-iOS.a in Frameworks */,
 				0573A9651526484200D0D884 /* SenTestingKit.framework in Frameworks */,
 				0573A9661526484200D0D884 /* UIKit.framework in Frameworks */,
 				0573A9671526484200D0D884 /* Foundation.framework in Frameworks */,
@@ -533,6 +531,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0501743F15265D2B001DFA82 /* MAZeroingWeakRef.m in Sources */,
 				0573A95A1526484200D0D884 /* main.m in Sources */,
 				0573A95E1526484200D0D884 /* PLAppDelegate.m in Sources */,
 			);
@@ -543,7 +542,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0573A97C1526486A00D0D884 /* PLWeakCompatibilityTests.m in Sources */,
-				0501743815264999001DFA82 /* MAZeroingWeakRef.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -706,8 +704,12 @@
 		0573A9741526484200D0D884 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					armv7,
+					armv6,
+				);
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
@@ -716,6 +718,7 @@
 				GCC_PREFIX_HEADER = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Prefix.pch";
 				INFOPLIST_FILE = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -726,8 +729,12 @@
 		0573A9751526484200D0D884 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					armv7,
+					armv6,
+				);
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
@@ -737,6 +744,7 @@
 				INFOPLIST_FILE = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -747,7 +755,10 @@
 		0573A9771526484200D0D884 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					armv7,
+					armv6,
+				);
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/PLWeakCompatibility-iOS-TestRunner.app/PLWeakCompatibility-iOS-TestRunner";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -767,7 +778,10 @@
 		0573A9781526484200D0D884 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					armv7,
+					armv6,
+				);
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/PLWeakCompatibility-iOS-TestRunner.app/PLWeakCompatibility-iOS-TestRunner";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
