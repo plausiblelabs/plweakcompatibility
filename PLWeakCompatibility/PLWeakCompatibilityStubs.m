@@ -15,14 +15,10 @@
 #define object_getClass object_getClass_disabled_for_ARC_PLWeakCompatibilityStubs
 #define objc_loadWeak objc_loadWeak_disabled_for_ARC_PLWeakCompatibilityStubs
 #define objc_storeWeak objc_storeWeak_disabled_for_ARC_PLWeakCompatibilityStubs
-#define objc_getAssociatedObject objc_getAssociatedObject_disabled_for_ARC_PLWeakCompatibilityStubs
-#define objc_setAssociatedObject objc_setAssociatedObject_disabled_for_ARC_PLWeakCompatibilityStubs
 #import <objc/runtime.h>
 #undef object_getClass
 #undef objc_loadWeak
 #undef objc_storeWeak
-#undef objc_getAssociatedObject
-#undef objc_setAssociatedObject
 
 // MAZeroingWeakRef Support
 static Class MAZWR = Nil;
@@ -60,8 +56,6 @@ PLObjectPtr objc_release(PLObjectPtr obj);
 PLObjectPtr objc_autorelease(PLObjectPtr obj);
 PLObjectPtr objc_retain(PLObjectPtr obj);
 Class object_getClass(PLObjectPtr obj);
-id objc_getAssociatedObject(PLObjectPtr obj, const void *key);
-void objc_setAssociatedObject(PLObjectPtr obj, const void *key, id value, objc_AssociationPolicy policy);
 
 // Primitive functions used to implement all weak stubs
 static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location);
@@ -159,9 +153,9 @@ static SEL releaseSELSwizzled;
 static SEL deallocSEL;
 static SEL deallocSELSwizzled;
 
-// Associated object keys tracking the last class a swizzled method was sent to on an object
-static void *kLastReleaseMessageClass = &kLastReleaseMessageClass;
-static void *kLastDeallocMessageClass = &kLastDeallocMessageClass;
+// Tables tracking the last class a swizzled method was sent to on an object
+static CFMutableDictionaryRef gLastReleaseClassTable;
+static CFMutableDictionaryRef gLastDeallocClassTable;
 
 
 ////////////////////
@@ -281,6 +275,9 @@ static void WeakInit(void) {
         releaseSELSwizzled = sel_getUid("release_PLWeakCompatibility_swizzled");
         deallocSEL = sel_getUid("dealloc");
         deallocSELSwizzled = sel_getUid("dealloc_PLWeakCompatibility_swizzled");
+        
+        gLastReleaseClassTable = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
+        gLastDeallocClassTable = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
     });
 }
 
@@ -321,17 +318,17 @@ static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
         // If lastSent is Nil, then this is the first release call on the stack for this object
         // and the call should start at the bottom. Otherwise, we want the next class above the
         // last one that was used.
-        Class lastSent = objc_getAssociatedObject(self, kLastReleaseMessageClass);
+        Class lastSent = (__bridge Class)CFDictionaryGetValue(gLastReleaseClassTable, self);
         Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
         targetClass = TopClassImplementingMethod(targetClass, releaseSELSwizzled);
-        objc_setAssociatedObject(self, kLastReleaseMessageClass, targetClass, OBJC_ASSOCIATION_ASSIGN);
+        CFDictionarySetValue(gLastReleaseClassTable, self, (__bridge void *)targetClass);
 
         // Call through to the original implementation on the target class.
         void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, releaseSELSwizzled);
         origIMP(self, _cmd);
 
         // Reset the association to leave it clean for the next call to release.
-        objc_setAssociatedObject(self, kLastReleaseMessageClass, Nil, OBJC_ASSOCIATION_ASSIGN);
+        CFDictionaryRemoveValue(gLastReleaseClassTable, self);
     } pthread_mutex_unlock(&gWeakMutex);
 }
 
@@ -356,17 +353,17 @@ static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
         CFDictionaryRemoveValue(gObjectToAddressesMap, self);
 
         // We follow the same procedure as in SwizzledReleaseIMP to properly handle recursion.
-        Class lastSent = objc_getAssociatedObject(self, kLastDeallocMessageClass);
+        Class lastSent = (__bridge Class)CFDictionaryGetValue(gLastDeallocClassTable, self);
         Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
         targetClass = TopClassImplementingMethod(targetClass, deallocSELSwizzled);
-        objc_setAssociatedObject(self, kLastDeallocMessageClass, targetClass, OBJC_ASSOCIATION_ASSIGN);
-
+        CFDictionarySetValue(gLastDeallocClassTable, self, (__bridge void *)targetClass);
+        
         // Call through to the original implementation.
         void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, deallocSELSwizzled);
         origIMP(self, _cmd);
-
-        // DON'T reset the assocation. It was destroyed when the object was destroyed, and we can't
-        // even touch it now if we wanted to.
+        
+        // Remove the class from the last sent table to leave it clean for the next object to occupy this space
+        CFDictionaryRemoveValue(gLastDeallocClassTable, self);
     } pthread_mutex_unlock(&gWeakMutex);
 }
 
