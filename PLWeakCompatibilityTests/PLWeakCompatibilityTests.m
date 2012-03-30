@@ -39,60 +39,62 @@ TESTCLASS(PLWeakCompatibilityTestClass3, PLWeakCompatibilityTestClass2)
 
 @implementation PLWeakCompatibilityTests
 
-- (void) reallyTestBasics {
-    __weak id weakObj;
+- (void) enumerateConfigurations: (void (^)(void)) block {
+    PLWeakCompatibilitySetFallthroughEnabled(YES);
+    PLWeakCompatibilitySetMAZWREnabled(NO);
+    block();
 
-    @autoreleasepool {
-        id obj = [[NSObject alloc] init];
-        weakObj = obj;
-        STAssertNotNil(weakObj, @"Weak pointer should not be nil");
+    PLWeakCompatibilitySetFallthroughEnabled(NO);
+    block();
 
-        obj = nil;
+    PLWeakCompatibilitySetMAZWREnabled(YES);
+    if (PLWeakCompatibilityHasMAZWR()) {
+        block();
+    } else {
+        NSLog(@"Unable to test MAZeroingWeakRef usage as MAZWR is not present");
     }
-
-    STAssertNil(weakObj, @"Weak pointer should be nil after destroying the object");
 }
 
 - (void) testBasics {
-    PLWeakCompatibilitySetFallthroughEnabled(YES);
-    [self reallyTestBasics];
+    [self enumerateConfigurations: ^{
+        __weak id weakObj;
 
-    PLWeakCompatibilitySetFallthroughEnabled(NO);
-    [self reallyTestBasics];
+        @autoreleasepool {
+            id obj = [[NSObject alloc] init];
+            weakObj = obj;
+            STAssertNotNil(weakObj, @"Weak pointer should not be nil");
 
-    PLWeakCompatibilitySetMAZWREnabled(YES);
-    [self reallyTestBasics];
-}
+            obj = nil;
+        }
 
-- (void) reallyTestInheritance {
-    __weak id weakObj1;
-    __weak id weakObj2;
-
-    @autoreleasepool {
-        PLWeakCompatibilityTestClass1 *obj1 = [[PLWeakCompatibilityTestClass1 alloc] init];
-        PLWeakCompatibilityTestClass2 *obj2 = [[PLWeakCompatibilityTestClass2 alloc] init];
-
-        weakObj1 = obj1;
-        weakObj2 = obj2;
-
-        STAssertNotNil(weakObj1, @"Test object 1 should not be nil");
-        STAssertNotNil(weakObj2, @"Test object 2 should not be nil");
-
-        NSArray *array = [NSArray arrayWithObjects: obj1, obj2, nil];
-        array = [NSArray arrayWithObjects: obj2, obj1, nil];
-        NSMutableArray *mutableArray = [array mutableCopy];
-        [mutableArray removeAllObjects];
-    }
-
-    STAssertNil(weakObj1, @"Test object 1 should be nil");
-    STAssertNil(weakObj2, @"Test object 2 should be nil");
+        STAssertNil(weakObj, @"Weak pointer should be nil after destroying the object");
+    }];
 }
 
 - (void) DISABLED_testInheritance {
-    PLWeakCompatibilitySetFallthroughEnabled(YES);
-    [self reallyTestInheritance];
-    PLWeakCompatibilitySetFallthroughEnabled(NO);
-    [self reallyTestInheritance];
+    [self enumerateConfigurations: ^{
+        __weak id weakObj1;
+        __weak id weakObj2;
+
+        @autoreleasepool {
+            PLWeakCompatibilityTestClass1 *obj1 = [[PLWeakCompatibilityTestClass1 alloc] init];
+            PLWeakCompatibilityTestClass2 *obj2 = [[PLWeakCompatibilityTestClass2 alloc] init];
+
+            weakObj1 = obj1;
+            weakObj2 = obj2;
+
+            STAssertNotNil(weakObj1, @"Test object 1 should not be nil");
+            STAssertNotNil(weakObj2, @"Test object 2 should not be nil");
+
+            NSArray *array = [NSArray arrayWithObjects: obj1, obj2, nil];
+            array = [NSArray arrayWithObjects: obj2, obj1, nil];
+            NSMutableArray *mutableArray = [array mutableCopy];
+            [mutableArray removeAllObjects];
+        }
+
+        STAssertNil(weakObj1, @"Test object 1 should be nil");
+        STAssertNil(weakObj2, @"Test object 2 should be nil");
+    }];
 }
 
 @end
