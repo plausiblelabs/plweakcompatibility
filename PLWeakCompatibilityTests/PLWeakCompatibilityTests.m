@@ -71,7 +71,7 @@ TESTCLASS(PLWeakCompatibilityTestClass3, PLWeakCompatibilityTestClass2)
     }];
 }
 
-- (void) DISABLED_testInheritance {
+- (void) testInheritance {
     [self enumerateConfigurations: ^{
         __weak id weakObj1;
         __weak id weakObj2;

@@ -15,10 +15,14 @@
 #define object_getClass object_getClass_disabled_for_ARC_PLWeakCompatibilityStubs
 #define objc_loadWeak objc_loadWeak_disabled_for_ARC_PLWeakCompatibilityStubs
 #define objc_storeWeak objc_storeWeak_disabled_for_ARC_PLWeakCompatibilityStubs
+#define objc_getAssociatedObject objc_getAssociatedObject_disabled_for_ARC_PLWeakCompatibilityStubs
+#define objc_setAssociatedObject objc_setAssociatedObject_disabled_for_ARC_PLWeakCompatibilityStubs
 #import <objc/runtime.h>
 #undef object_getClass
 #undef objc_loadWeak
 #undef objc_storeWeak
+#undef objc_getAssociatedObject
+#undef objc_setAssociatedObject
 
 // MAZeroingWeakRef Support
 static Class MAZWR = Nil;
@@ -56,6 +60,8 @@ PLObjectPtr objc_release(PLObjectPtr obj);
 PLObjectPtr objc_autorelease(PLObjectPtr obj);
 PLObjectPtr objc_retain(PLObjectPtr obj);
 Class object_getClass(PLObjectPtr obj);
+id objc_getAssociatedObject(PLObjectPtr obj, const void *key);
+void objc_setAssociatedObject(PLObjectPtr obj, const void *key, id value, objc_AssociationPolicy policy);
 
 // Primitive functions used to implement all weak stubs
 static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location);
@@ -153,6 +159,10 @@ static SEL releaseSELSwizzled;
 static SEL deallocSEL;
 static SEL deallocSELSwizzled;
 
+// Associated object keys tracking the last class a swizzled method was sent to on an object
+static void *kLastReleaseMessageClass = &kLastReleaseMessageClass;
+static void *kLastDeallocMessageClass = &kLastDeallocMessageClass;
+
 
 ////////////////////
 #pragma mark Primitive Functions
@@ -245,11 +255,32 @@ static void WeakInit(void) {
     });
 }
 
+static Class TopClassImplementingMethod(Class start, SEL sel) {
+    IMP imp = class_getMethodImplementation(start, sel);
+
+    Class previous = start;
+    Class cursor = class_getSuperclass(previous);
+    while (cursor != Nil) {
+        if (imp != class_getMethodImplementation(cursor, sel))
+            break;
+        previous = cursor;
+        cursor = class_getSuperclass(cursor);
+    }
+
+    return previous;
+}
+
 static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
     pthread_mutex_lock(&gWeakMutex); {
-        Class targetClass = object_getClass(self);
+        Class lastSent = objc_getAssociatedObject(self, kLastReleaseMessageClass);
+        Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
+        targetClass = TopClassImplementingMethod(targetClass, releaseSELSwizzled);
+        objc_setAssociatedObject(self, kLastReleaseMessageClass, targetClass, OBJC_ASSOCIATION_ASSIGN);
+
         void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, releaseSELSwizzled);
         origIMP(self, _cmd);
+
+        objc_setAssociatedObject(self, kLastReleaseMessageClass, Nil, OBJC_ASSOCIATION_ASSIGN);
     } pthread_mutex_unlock(&gWeakMutex);
 }
 
@@ -265,7 +296,11 @@ static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
             CFSetApplyFunction(addresses, ClearAddress, NULL);
         CFDictionaryRemoveValue(gObjectToAddressesMap, self);
 
-        Class targetClass = object_getClass(self);
+        Class lastSent = objc_getAssociatedObject(self, kLastDeallocMessageClass);
+        Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
+        targetClass = TopClassImplementingMethod(targetClass, deallocSELSwizzled);
+        objc_setAssociatedObject(self, kLastDeallocMessageClass, targetClass, OBJC_ASSOCIATION_ASSIGN);
+        
         void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, deallocSELSwizzled);
         origIMP(self, _cmd);
     } pthread_mutex_unlock(&gWeakMutex);
