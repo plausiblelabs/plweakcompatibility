@@ -715,7 +715,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Prefix.pch";
 				INFOPLIST_FILE = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -735,7 +735,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Prefix.pch";
 				INFOPLIST_FILE = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -756,7 +756,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Prefix.pch";
 				INFOPLIST_FILE = "PLWeakCompatibility-iOS-Tests/PLWeakCompatibility-iOS-TestRunnerTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -776,7 +776,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Prefix.pch";
 				INFOPLIST_FILE = "PLWeakCompatibility-iOS-Tests/PLWeakCompatibility-iOS-TestRunnerTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TEST_HOST = "$(BUNDLE_LOADER)";
