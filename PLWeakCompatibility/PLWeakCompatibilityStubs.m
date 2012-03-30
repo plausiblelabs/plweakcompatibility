@@ -11,7 +11,7 @@
 #import <dlfcn.h>
 #import <pthread.h>
 
-// We need our own prototypes for some functions to avoid conflicts, so disable the one from the header
+// We need our own prototypes for some functions to avoid conflicts, so disable the ones from the header
 #define object_getClass object_getClass_disabled_for_ARC_PLWeakCompatibilityStubs
 #define objc_loadWeak objc_loadWeak_disabled_for_ARC_PLWeakCompatibilityStubs
 #define objc_storeWeak objc_storeWeak_disabled_for_ARC_PLWeakCompatibilityStubs
@@ -168,6 +168,12 @@ static void *kLastDeallocMessageClass = &kLastDeallocMessageClass;
 #pragma mark Primitive Functions
 ////////////////////
 
+/**
+ * Load a weak reference.
+ *
+ * @param location a pointer to the weak reference to load
+ * @return the object stored at the weak reference, retained, or nil if none
+ */
 static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location) {
     /* Hand off to MAZWR */
     if (has_mazwr()) {
@@ -177,6 +183,9 @@ static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location) {
 
     WeakInit();
 
+    // Fetch the object with the global mutex held. Since weakly referenced objects
+    // hold the mutex while releasing and deallocating, this guarantees we either
+    // get a reference to a live object, or nil.
     PLObjectPtr obj;
     pthread_mutex_lock(&gWeakMutex); {
         obj = *location;
@@ -187,6 +196,12 @@ static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location) {
     return obj;
 }
 
+/**
+ * Register an object in a new weak reference.
+ *
+ * @param location a pointer to the weak reference where obj is being stored
+ * @param the object being weakly referenced at this location
+ */
 static void PLRegisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
     /* Hand off to MAZWR */
     if (has_mazwr()) {        
@@ -197,8 +212,11 @@ static void PLRegisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
 
     WeakInit();
 
+    // Add the location to the list of weak references pointing to the object.
     pthread_mutex_lock(&gWeakMutex); {
         CFMutableSetRef addresses = (CFMutableSetRef)CFDictionaryGetValue(gObjectToAddressesMap, obj);
+
+        // If this is the first weak reference to this object, addresses won't exist yet, so create it.
         if (addresses == NULL) {
             addresses = CFSetCreateMutable(NULL, 0, NULL);
             CFDictionarySetValue(gObjectToAddressesMap, obj, addresses);
@@ -207,10 +225,17 @@ static void PLRegisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
 
         CFSetAddValue(addresses, location);
 
+        // Make sure the appropriate swizzling has been done to obj's class.
         EnsureDeallocationTrigger(obj);
     } pthread_mutex_unlock(&gWeakMutex);
 }
 
+/**
+ * Unregister an object from the given weak reference.
+ *
+ * @param location a pointer to the weak reference to unregister
+ * @param obj the object to unregister
+ */
 static void PLUnregisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
     /* Hand off to MAZWR */
     if (has_mazwr()) {
@@ -222,6 +247,7 @@ static void PLUnregisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
     WeakInit();
 
     pthread_mutex_lock(&gWeakMutex); {
+        // Remove the location from the set of weakly referenced addresses.
         CFMutableSetRef addresses = (CFMutableSetRef)CFDictionaryGetValue(gObjectToAddressesMap, *location);
         if (addresses != NULL)
             CFSetRemoveValue(addresses, location);
@@ -233,6 +259,9 @@ static void PLUnregisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
 #pragma mark Internal Functions
 ////////////////////
 
+/**
+ * Initialize all weak reference global variables.
+ */
 static void WeakInit(void) {
     static dispatch_once_t pred;
     dispatch_once(&pred, ^{
@@ -255,6 +284,17 @@ static void WeakInit(void) {
     });
 }
 
+/**
+ * Search for the top implementation of a given method. Starting at a given class,
+ * it searches the class hierarchy upwards until it finds a class with a different
+ * implementation for the given selector. It then returns the topmost class to have
+ * the same implementation as the class that was passed in. This is used to emulate
+ * a "super" call to a swizzled method by seeing which class the swizzled implementation
+ * belongs to, and targeting the next class above it for the next call.
+ *
+ * @param start the class to start examining
+ * @param sel the selector of the method to search for
+ */
 static Class TopClassImplementingMethod(Class start, SEL sel) {
     IMP imp = class_getMethodImplementation(start, sel);
 
@@ -270,42 +310,74 @@ static Class TopClassImplementingMethod(Class start, SEL sel) {
     return previous;
 }
 
+/**
+ * A swizzled release implementation which calls through to the real implementation with the
+ * global weak mutex held, to eliminate race conditions between an object being destroyed and
+ * a weak reference to that object being fetched.
+ */
 static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
     pthread_mutex_lock(&gWeakMutex); {
+        // Figure out which class release was last sent to, in the event of recursive releases.
+        // If lastSent is Nil, then this is the first release call on the stack for this object
+        // and the call should start at the bottom. Otherwise, we want the next class above the
+        // last one that was used.
         Class lastSent = objc_getAssociatedObject(self, kLastReleaseMessageClass);
         Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
         targetClass = TopClassImplementingMethod(targetClass, releaseSELSwizzled);
         objc_setAssociatedObject(self, kLastReleaseMessageClass, targetClass, OBJC_ASSOCIATION_ASSIGN);
 
+        // Call through to the original implementation on the target class.
         void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, releaseSELSwizzled);
         origIMP(self, _cmd);
 
+        // Reset the association to leave it clean for the next call to release.
         objc_setAssociatedObject(self, kLastReleaseMessageClass, Nil, OBJC_ASSOCIATION_ASSIGN);
     } pthread_mutex_unlock(&gWeakMutex);
 }
 
+/**
+ * A helper function used when enumerating the CFSet of weak reference addresses. It clears out
+ * the given address.
+ */
 static void ClearAddress(const void *value, void *context) {
     void **address = (void **)value;
     *address = NULL;
 }
 
+/**
+ * A swizzled dealloc implementation which clears all weak references to the object before beginning destruction.
+ */
 static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
     pthread_mutex_lock(&gWeakMutex); {
+        // Clear all weak references and delete the addresses set.
         CFSetRef addresses = CFDictionaryGetValue(gObjectToAddressesMap, self);
         if (addresses != NULL)
             CFSetApplyFunction(addresses, ClearAddress, NULL);
         CFDictionaryRemoveValue(gObjectToAddressesMap, self);
 
+        // We follow the same procedure as in SwizzledReleaseIMP to properly handle recursion.
         Class lastSent = objc_getAssociatedObject(self, kLastDeallocMessageClass);
         Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
         targetClass = TopClassImplementingMethod(targetClass, deallocSELSwizzled);
         objc_setAssociatedObject(self, kLastDeallocMessageClass, targetClass, OBJC_ASSOCIATION_ASSIGN);
-        
+
+        // Call through to the original implementation.
         void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, deallocSELSwizzled);
         origIMP(self, _cmd);
+
+        // DON'T reset the assocation. It was destroyed when the object was destroyed, and we can't
+        // even touch it now if we wanted to.
     } pthread_mutex_unlock(&gWeakMutex);
 }
 
+/**
+ * Swizzle out a method on a given class.
+ *
+ * @param c the class to manipulate
+ * @param orig the original selector of the method
+ * @param new the swizzled selector of the method; the original implementation will be found here afterwards
+ * @param newIMP the new method implementation to install under "orig"
+ */
 static void Swizzle(Class c, SEL orig, SEL new, IMP newIMP) {
     Method m = class_getInstanceMethod(c, orig);
     IMP origIMP = method_getImplementation(m);
@@ -313,6 +385,11 @@ static void Swizzle(Class c, SEL orig, SEL new, IMP newIMP) {
     method_setImplementation(m, newIMP);
 }
 
+/**
+ * Ensure that the appropriate swizzling has been done to the given object's class.
+ *
+ * @param obj the object to check
+ */
 static void EnsureDeallocationTrigger(PLObjectPtr obj) {
     Class c = object_getClass(obj);
     if (CFSetContainsValue(gSwizzledClasses, (__bridge const void *)c))
