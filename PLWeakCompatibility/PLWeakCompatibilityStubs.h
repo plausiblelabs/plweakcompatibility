@@ -21,4 +21,5 @@ PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj);
 #endif
 
 void PLWeakCompatibilitySetMAZWREnabled(BOOL enabled);
+BOOL PLWeakCompatibilityHasMAZWR(void);
 void PLWeakCompatibilitySetFallthroughEnabled(BOOL enabled);

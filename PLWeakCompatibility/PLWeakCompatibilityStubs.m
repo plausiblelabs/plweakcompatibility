@@ -22,7 +22,7 @@
 
 // MAZeroingWeakRef Support
 static Class MAZWR = Nil;
-static bool mazwrEnabled = false;
+static bool mazwrEnabled = true;
 static inline bool has_mazwr () {
     if (!mazwrEnabled)
         return false;
@@ -47,6 +47,9 @@ void PLWeakCompatibilitySetMAZWREnabled(BOOL enabled) {
     mazwrEnabled = enabled;
 }
 
+BOOL PLWeakCompatibilityHasMAZWR(void) {
+    return has_mazwr();
+}
 
 // Runtime (or ARC compatibility) prototypes we use here.
 PLObjectPtr objc_release(PLObjectPtr obj);
