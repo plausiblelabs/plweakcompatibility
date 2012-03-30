@@ -141,6 +141,7 @@
 		C2CB83201523D8F300E8ABFC = {
 			isa = PBXGroup;
 			children = (
+				C212358A15263C410082CE88 /* README.markdown */,
 				C2CB83351523D8F300E8ABFC /* PLWeakCompatibility */,
 				C2CB834D1523D8F400E8ABFC /* PLWeakCompatibilityTests */,
 				C2CB832E1523D8F300E8ABFC /* Frameworks */,
