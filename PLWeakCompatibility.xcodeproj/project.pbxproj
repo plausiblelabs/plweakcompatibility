@@ -61,6 +61,8 @@
 		053887C61523F6F700CDC1DF /* libPLWeakCompatibility-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPLWeakCompatibility-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		053887D31523F6F700CDC1DF /* PLWeakCompatibility-iOS-Device-Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "PLWeakCompatibility-iOS-Device-Tests.octest"; path = "PLWeakCompatibility-iOS-Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		053888281523F7EA00CDC1DF /* PLWeakCompatibility-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PLWeakCompatibility-Info.plist"; sourceTree = "<group>"; };
+		C212358A15263C410082CE88 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
+		C2123595152647A50082CE88 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		C2CB83311523D8F300E8ABFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C2CB83391523D8F300E8ABFC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C2CB833B1523D8F300E8ABFC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 		C2CB83201523D8F300E8ABFC = {
 			isa = PBXGroup;
 			children = (
+				C2123595152647A50082CE88 /* LICENSE */,
 				C212358A15263C410082CE88 /* README.markdown */,
 				C2CB83351523D8F300E8ABFC /* PLWeakCompatibility */,
 				C2CB834D1523D8F400E8ABFC /* PLWeakCompatibilityTests */,
