@@ -718,7 +718,10 @@
 				GCC_PREFIX_HEADER = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Prefix.pch";
 				INFOPLIST_FILE = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -744,7 +747,10 @@
 				INFOPLIST_FILE = "PLWeakCompatibility-iOS-TestRunner/PLWeakCompatibility-iOS-TestRunner-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
