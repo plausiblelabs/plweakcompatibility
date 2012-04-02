@@ -379,7 +379,7 @@ static void Swizzle(Class c, SEL orig, SEL new, IMP newIMP) {
     Method m = class_getInstanceMethod(c, orig);
     IMP origIMP = method_getImplementation(m);
     class_addMethod(c, new, origIMP, method_getTypeEncoding(m));
-    method_setImplementation(m, newIMP);
+    class_replaceMethod(c, orig, newIMP, method_getTypeEncoding(m));
 }
 
 /**

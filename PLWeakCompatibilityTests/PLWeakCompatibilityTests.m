@@ -37,6 +37,9 @@ TESTCLASS(PLWeakCompatibilityTestClass1, NSObject)
 TESTCLASS(PLWeakCompatibilityTestClass2, PLWeakCompatibilityTestClass1)
 TESTCLASS(PLWeakCompatibilityTestClass3, PLWeakCompatibilityTestClass2)
 
+@interface PLWeakCompatibilityEmptyTestSubclass : NSObject @end
+@implementation PLWeakCompatibilityEmptyTestSubclass @end
+
 @implementation PLWeakCompatibilityTests
 
 - (void) enumerateConfigurations: (void (^)(void)) block {
@@ -60,7 +63,7 @@ TESTCLASS(PLWeakCompatibilityTestClass3, PLWeakCompatibilityTestClass2)
         __weak id weakObj;
 
         @autoreleasepool {
-            id obj = [[NSObject alloc] init];
+            id obj = [[PLWeakCompatibilityEmptyTestSubclass alloc] init];
             weakObj = obj;
             STAssertNotNil(weakObj, @"Weak pointer should not be nil");
 
