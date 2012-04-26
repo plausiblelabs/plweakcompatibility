@@ -69,9 +69,9 @@ static BOOL fallthroughEnabled = YES;
         static dispatch_once_t fptrOnce; \
         static __typeof__(&name) fptr; \
         dispatch_once(&fptrOnce, ^{ fptr = dlsym(RTLD_NEXT, #name); });\
-            if (fallthroughEnabled && fptr != NULL) \
-                return fptr(__VA_ARGS__); \
-        } while(0)
+        if (fallthroughEnabled && fptr != NULL) \
+            return fptr(__VA_ARGS__); \
+    } while(0)
 
 void PLWeakCompatibilitySetFallthroughEnabled(BOOL enabled) {
     fallthroughEnabled = enabled;
