@@ -111,6 +111,12 @@ TESTCLASS(PLWeakCompatibilityTestClass3, PLWeakCompatibilityTestClass2)
 
 - (void) testDeallocDeadlock {
     [self enumerateConfigurations: ^{
+        /* MAZeroingWeakRef is (currently?) susceptible to this deadlock, so don't test it
+         * since we don't want to deadlock the tests. */
+        if (PLWeakCompatibilityHasMAZWR()) {
+            return;
+        }
+        
         @autoreleasepool {
             __weak id weakSelf = self;
             

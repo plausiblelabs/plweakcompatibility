@@ -15,10 +15,14 @@
 #define object_getClass object_getClass_disabled_for_ARC_PLWeakCompatibilityStubs
 #define objc_loadWeak objc_loadWeak_disabled_for_ARC_PLWeakCompatibilityStubs
 #define objc_storeWeak objc_storeWeak_disabled_for_ARC_PLWeakCompatibilityStubs
+#define objc_getAssociatedObject objc_getAssociatedObject_disabled_for_ARC_PLWeakCompatibilityStubs
+#define objc_setAssociatedObject objc_setAssociatedObject_disabled_for_ARC_PLWeakCompatibilityStubs
 #import <objc/runtime.h>
 #undef object_getClass
 #undef objc_loadWeak
 #undef objc_storeWeak
+#undef objc_getAssociatedObject
+#undef objc_setAssociatedObject
 
 // MAZeroingWeakRef Support
 static Class MAZWR = Nil;
@@ -56,11 +60,13 @@ PLObjectPtr objc_release(PLObjectPtr obj);
 PLObjectPtr objc_autorelease(PLObjectPtr obj);
 PLObjectPtr objc_retain(PLObjectPtr obj);
 Class object_getClass(PLObjectPtr obj);
+void objc_setAssociatedObject(PLObjectPtr object, const void *key, id value, objc_AssociationPolicy policy);
+id objc_getAssociatedObject(PLObjectPtr object, const void *key);
 
 // Primitive functions used to implement all weak stubs
 static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location);
 static void PLRegisterWeak(PLObjectPtr *location, PLObjectPtr obj);
-static void PLUnregisterWeak(PLObjectPtr *location, PLObjectPtr obj);
+static void PLUnregisterWeak(PLObjectPtr *location);
 
 // Convenience for falling through to the system implementation.
 static BOOL fallthroughEnabled = YES;
@@ -117,7 +123,7 @@ PLObjectPtr objc_loadWeak(PLObjectPtr *location) {
 PLObjectPtr objc_storeWeak(PLObjectPtr *location, PLObjectPtr obj) {
     NEXT(objc_storeWeak, location, obj);
 
-    PLUnregisterWeak(location, obj);
+    PLUnregisterWeak(location);
 
     *location = obj;
 
@@ -141,8 +147,32 @@ static CFMutableDictionaryRef gObjectToAddressesMap;
 // A list of all classes that have been swizzled
 static CFMutableSetRef gSwizzledClasses;
 
+// A list of all objects that are in the middle of being released
+static CFMutableSetRef gReleasingObjects;
+
+// Condition variable used to signal when releasing objects are done releasing
+static pthread_cond_t gReleasingObjectsCond;
+
+// Thread local storage key
+static pthread_key_t gTLSKey;
+
+// Thread local storage struct
+struct TLS {
+    // Communicate back to release implementations whether dealloc fired
+    BOOL didDealloc;
+    
+    // Table tracking the last class a swizzled method was sent to on an object
+    CFMutableDictionaryRef lastReleaseClassTable;
+};
+
 // Ensure everything is properly initialized
 static void WeakInit(void);
+
+// Fetch the TLS struct for this thread
+static struct TLS *GetTLS(void);
+
+// Destroy the thread's TLS struct
+static void DestroyTLS(void *ptr);
 
 // Make sure the object's class is properly swizzled to clear weak refs on deallocation
 static void EnsureDeallocationTrigger(PLObjectPtr obj);
@@ -153,9 +183,8 @@ static SEL releaseSELSwizzled;
 static SEL deallocSEL;
 static SEL deallocSELSwizzled;
 
-// Tables tracking the last class a swizzled method was sent to on an object
-static CFMutableDictionaryRef gLastReleaseClassTable;
-static CFMutableDictionaryRef gLastDeallocClassTable;
+// For dealloc, use an associated object for automated cleanup
+static void *gLastDeallocClassKey = &gLastDeallocClassKey;
 
 
 ////////////////////
@@ -177,12 +206,13 @@ static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location) {
 
     WeakInit();
 
-    // Fetch the object with the global mutex held. Since weakly referenced objects
-    // hold the mutex while releasing and deallocating, this guarantees we either
-    // get a reference to a live object, or nil.
     PLObjectPtr obj;
     pthread_mutex_lock(&gWeakMutex); {
         obj = *location;
+        while (CFSetContainsValue(gReleasingObjects, obj)) {
+            pthread_cond_wait(&gReleasingObjectsCond, &gWeakMutex);
+            obj = *location;
+        }
         objc_retain(obj);
     }
     pthread_mutex_unlock(&gWeakMutex);
@@ -230,7 +260,7 @@ static void PLRegisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
  * @param location a pointer to the weak reference to unregister
  * @param obj the object to unregister
  */
-static void PLUnregisterWeak(PLObjectPtr *location, PLObjectPtr obj) {
+static void PLUnregisterWeak(PLObjectPtr *location) {
     /* Hand off to MAZWR */
     if (has_mazwr()) {
         if (*location != nil)
@@ -270,15 +300,44 @@ static void WeakInit(void) {
         gObjectToAddressesMap = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 
         gSwizzledClasses = CFSetCreateMutable(NULL, 0, NULL);
+        
+        gReleasingObjects = CFSetCreateMutable(NULL, 0, NULL);
+        pthread_cond_init(&gReleasingObjectsCond, NULL);
+        
+        int err = pthread_key_create(&gTLSKey, DestroyTLS);
+        if (err != 0) {
+            NSLog(@"Error calling pthread_key_create, we really can't recover from that: %s (%d)", strerror(err), err);
+            abort();
+        }
 
         releaseSEL = sel_getUid("release");
         releaseSELSwizzled = sel_getUid("release_PLWeakCompatibility_swizzled");
         deallocSEL = sel_getUid("dealloc");
         deallocSELSwizzled = sel_getUid("dealloc_PLWeakCompatibility_swizzled");
-        
-        gLastReleaseClassTable = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
-        gLastDeallocClassTable = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
     });
+}
+
+/**
+ * Get the thread local storage struct for this thread.
+ */
+static struct TLS *GetTLS(void) {
+    struct TLS *tls = pthread_getspecific(gTLSKey);
+    if (tls == NULL) {
+        tls = calloc(1, sizeof(*tls));
+        tls->lastReleaseClassTable = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
+        pthread_setspecific(gTLSKey, tls);
+    }
+    return tls;
+}
+
+/**
+ * Destroy the given TLS struct.
+ */
+static void DestroyTLS(void *ptr) {
+    struct TLS *tls = ptr;
+    if (tls != NULL && tls->lastReleaseClassTable)
+        CFRelease(tls->lastReleaseClassTable);
+    free(tls);
 }
 
 /**
@@ -313,23 +372,41 @@ static Class TopClassImplementingMethod(Class start, SEL sel) {
  * a weak reference to that object being fetched.
  */
 static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
+    struct TLS *tls = GetTLS();
+    Class targetClass;
+    
     pthread_mutex_lock(&gWeakMutex); {
+        // Add this object to the list of releasing objects.
+        CFSetAddValue(gReleasingObjects, self);
+        
         // Figure out which class release was last sent to, in the event of recursive releases.
         // If lastSent is Nil, then this is the first release call on the stack for this object
         // and the call should start at the bottom. Otherwise, we want the next class above the
         // last one that was used.
-        Class lastSent = (__bridge Class)CFDictionaryGetValue(gLastReleaseClassTable, self);
-        Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
+        Class lastSent = (__bridge Class)CFDictionaryGetValue(tls->lastReleaseClassTable, self);
+        targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
         targetClass = TopClassImplementingMethod(targetClass, releaseSELSwizzled);
-        CFDictionarySetValue(gLastReleaseClassTable, self, (__bridge void *)targetClass);
-
-        // Call through to the original implementation on the target class.
-        void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, releaseSELSwizzled);
-        origIMP(self, _cmd);
-
-        // Reset the association to leave it clean for the next call to release.
-        CFDictionaryRemoveValue(gLastReleaseClassTable, self);
+        CFDictionarySetValue(tls->lastReleaseClassTable, self, (__bridge void *)targetClass);
     } pthread_mutex_unlock(&gWeakMutex);
+
+    // Clear the dealloc-fired flag before potentially making dealloc fire.
+    tls->didDealloc = NO;
+    
+    // Call through to the original implementation on the target class.
+    void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, releaseSELSwizzled);
+    origIMP(self, _cmd);
+    
+    // If dealloc never fired, clean up.
+    if (!tls->didDealloc) {
+        pthread_mutex_lock(&gWeakMutex); {
+            // We're no longer releasing.
+            CFSetRemoveValue(gReleasingObjects, self);
+            pthread_cond_broadcast(&gReleasingObjectsCond);
+            
+            // Reset the association to leave it clean for the next call to release.
+            CFDictionaryRemoveValue(tls->lastReleaseClassTable, self);
+        } pthread_mutex_unlock(&gWeakMutex);
+    }
 }
 
 /**
@@ -345,26 +422,38 @@ static void ClearAddress(const void *value, void *context) {
  * A swizzled dealloc implementation which clears all weak references to the object before beginning destruction.
  */
 static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
+    Class targetClass;
+    struct TLS *tls = GetTLS();
+    
     pthread_mutex_lock(&gWeakMutex); {
         // Clear all weak references and delete the addresses set.
         CFSetRef addresses = CFDictionaryGetValue(gObjectToAddressesMap, self);
         if (addresses != NULL)
             CFSetApplyFunction(addresses, ClearAddress, NULL);
         CFDictionaryRemoveValue(gObjectToAddressesMap, self);
+        
+        // We're no longer releasing (we're now releasED).
+        CFSetRemoveValue(gReleasingObjects, self);
+        pthread_cond_broadcast(&gReleasingObjectsCond);
 
-        // We follow the same procedure as in SwizzledReleaseIMP to properly handle recursion.
-        Class lastSent = (__bridge Class)CFDictionaryGetValue(gLastDeallocClassTable, self);
-        Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
+        // We follow the same basic procedure as in SwizzledReleaseIMP to properly handle recursion.
+        Class lastSent = objc_getAssociatedObject(self, gLastDeallocClassKey);
+        targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
         targetClass = TopClassImplementingMethod(targetClass, deallocSELSwizzled);
-        CFDictionarySetValue(gLastDeallocClassTable, self, (__bridge void *)targetClass);
+        objc_setAssociatedObject(self, gLastDeallocClassKey, targetClass, OBJC_ASSOCIATION_ASSIGN);
         
-        // Call through to the original implementation.
-        void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, deallocSELSwizzled);
-        origIMP(self, _cmd);
-        
-        // Remove the class from the last sent table to leave it clean for the next object to occupy this space
-        CFDictionaryRemoveValue(gLastDeallocClassTable, self);
+        // Clean up the release association, since release can't do it in this case.
+        CFDictionaryRemoveValue(tls->lastReleaseClassTable, self);
     } pthread_mutex_unlock(&gWeakMutex);
+    
+    // Call through to the original implementation.
+    void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, deallocSELSwizzled);
+    origIMP(self, _cmd);
+    
+    // Tell the calling release(s) that we did dealloc
+    // NOTE: must be done after calling original dealloc, otherwise original may clear it
+    // by calling release on something
+    tls->didDealloc = YES;
 }
 
 /**
