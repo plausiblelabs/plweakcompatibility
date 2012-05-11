@@ -15,14 +15,12 @@
 #define object_getClass object_getClass_disabled_for_ARC_PLWeakCompatibilityStubs
 #define objc_loadWeak objc_loadWeak_disabled_for_ARC_PLWeakCompatibilityStubs
 #define objc_storeWeak objc_storeWeak_disabled_for_ARC_PLWeakCompatibilityStubs
-#define objc_getAssociatedObject objc_getAssociatedObject_disabled_for_ARC_PLWeakCompatibilityStubs
-#define objc_setAssociatedObject objc_setAssociatedObject_disabled_for_ARC_PLWeakCompatibilityStubs
+// Note to future self: associated objects are basically incompatible with older OSes due to
+// failed cleanup with isa-swizzled objects. So, don't try to use them. Thanks, past self.
 #import <objc/runtime.h>
 #undef object_getClass
 #undef objc_loadWeak
 #undef objc_storeWeak
-#undef objc_getAssociatedObject
-#undef objc_setAssociatedObject
 
 // MAZeroingWeakRef Support
 static Class MAZWR = Nil;
@@ -60,8 +58,6 @@ PLObjectPtr objc_release(PLObjectPtr obj);
 PLObjectPtr objc_autorelease(PLObjectPtr obj);
 PLObjectPtr objc_retain(PLObjectPtr obj);
 Class object_getClass(PLObjectPtr obj);
-void objc_setAssociatedObject(PLObjectPtr object, const void *key, id value, objc_AssociationPolicy policy);
-id objc_getAssociatedObject(PLObjectPtr object, const void *key);
 
 // Primitive functions used to implement all weak stubs
 static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location);
@@ -161,8 +157,9 @@ struct TLS {
     // Communicate back to release implementations whether dealloc fired
     BOOL didDealloc;
     
-    // Table tracking the last class a swizzled method was sent to on an object
+    // Tables tracking the last class a swizzled method was sent to on an object
     CFMutableDictionaryRef lastReleaseClassTable;
+    CFMutableDictionaryRef lastDeallocClassTable;
 };
 
 // Ensure everything is properly initialized
@@ -325,6 +322,7 @@ static struct TLS *GetTLS(void) {
     if (tls == NULL) {
         tls = calloc(1, sizeof(*tls));
         tls->lastReleaseClassTable = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
+        tls->lastDeallocClassTable = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
         pthread_setspecific(gTLSKey, tls);
     }
     return tls;
@@ -335,8 +333,10 @@ static struct TLS *GetTLS(void) {
  */
 static void DestroyTLS(void *ptr) {
     struct TLS *tls = ptr;
-    if (tls != NULL && tls->lastReleaseClassTable)
+    if (tls != NULL && tls->lastReleaseClassTable) {
         CFRelease(tls->lastReleaseClassTable);
+        CFRelease(tls->lastDeallocClassTable);
+    }
     free(tls);
 }
 
@@ -437,10 +437,10 @@ static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
         pthread_cond_broadcast(&gReleasingObjectsCond);
 
         // We follow the same basic procedure as in SwizzledReleaseIMP to properly handle recursion.
-        Class lastSent = objc_getAssociatedObject(self, gLastDeallocClassKey);
+        Class lastSent = (__bridge Class)CFDictionaryGetValue(tls->lastDeallocClassTable, self);
         targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
         targetClass = TopClassImplementingMethod(targetClass, deallocSELSwizzled);
-        objc_setAssociatedObject(self, gLastDeallocClassKey, targetClass, OBJC_ASSOCIATION_ASSIGN);
+        CFDictionarySetValue(tls->lastDeallocClassTable, self, (__bridge void *)targetClass);
         
         // Clean up the release association, since release can't do it in this case.
         CFDictionaryRemoveValue(tls->lastReleaseClassTable, self);
@@ -454,6 +454,11 @@ static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
     // NOTE: must be done after calling original dealloc, otherwise original may clear it
     // by calling release on something
     tls->didDealloc = YES;
+    
+    // And clear our last class entry, to clean up for the next guy with this pointer.
+    // Note: a new object may now exist at this pointer, BUT this is still safe, since
+    // the dictionary is thread-local. Really. I think. Right?
+    CFDictionaryRemoveValue(tls->lastDeallocClassTable, self);
 }
 
 /**
