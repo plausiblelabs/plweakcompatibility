@@ -180,9 +180,6 @@ static SEL releaseSELSwizzled;
 static SEL deallocSEL;
 static SEL deallocSELSwizzled;
 
-// For dealloc, use an associated object for automated cleanup
-static void *gLastDeallocClassKey = &gLastDeallocClassKey;
-
 
 ////////////////////
 #pragma mark Primitive Functions
