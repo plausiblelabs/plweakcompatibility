@@ -154,9 +154,6 @@ static pthread_key_t gTLSKey;
 
 // Thread local storage struct
 struct TLS {
-    // Communicate back to release implementations whether dealloc fired
-    BOOL didDealloc;
-    
     // Tables tracking the last class a swizzled method was sent to on an object
     CFMutableDictionaryRef lastReleaseClassTable;
     CFMutableDictionaryRef lastDeallocClassTable;
@@ -348,20 +345,20 @@ static void DestroyTLS(void *ptr) {
  * @param start the class to start examining
  * @param sel the selector of the method to search for
  */
-static Class TopClassImplementingMethod(Class start, SEL sel) {
-    IMP imp = class_getMethodImplementation(start, sel);
+    static Class TopClassImplementingMethod(Class start, SEL sel) {
+        IMP imp = class_getMethodImplementation(start, sel);
 
-    Class previous = start;
-    Class cursor = class_getSuperclass(previous);
-    while (cursor != Nil) {
-        if (imp != class_getMethodImplementation(cursor, sel))
-            break;
-        previous = cursor;
-        cursor = class_getSuperclass(cursor);
+        Class previous = start;
+        Class cursor = class_getSuperclass(previous);
+        while (cursor != Nil) {
+            if (imp != class_getMethodImplementation(cursor, sel))
+                break;
+            previous = cursor;
+            cursor = class_getSuperclass(cursor);
+        }
+
+        return previous;
     }
-
-    return previous;
-}
 
 /**
  * A swizzled release implementation which calls through to the real implementation with the
@@ -386,9 +383,6 @@ static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
         CFDictionarySetValue(tls->lastReleaseClassTable, self, (__bridge void *)targetClass);
     } pthread_mutex_unlock(&gWeakMutex);
 
-    // Clear the dealloc-fired flag before potentially making dealloc fire.
-    tls->didDealloc = NO;
-    
     // Call through to the original implementation on the target class.
     void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, releaseSELSwizzled);
     origIMP(self, _cmd);
@@ -398,10 +392,8 @@ static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
         CFBagRemoveValue(gReleasingObjects, self);
         pthread_cond_broadcast(&gReleasingObjectsCond);
         
-        // If dealloc never fired, clean up the class table.
-        if (!tls->didDealloc) {
-            CFDictionaryRemoveValue(tls->lastReleaseClassTable, self);
-        }
+        // Clean up the class table.
+        CFDictionaryRemoveValue(tls->lastReleaseClassTable, self);
     } pthread_mutex_unlock(&gWeakMutex);
 }
 
@@ -446,11 +438,6 @@ static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
     // Call through to the original implementation.
     void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, deallocSELSwizzled);
     origIMP(self, _cmd);
-    
-    // Tell the calling release(s) that we did dealloc
-    // NOTE: must be done after calling original dealloc, otherwise original may clear it
-    // by calling release on something
-    tls->didDealloc = YES;
     
     // And clear our last class entry, to clean up for the next guy with this pointer.
     // Note: a new object may now exist at this pointer, BUT this is still safe, since
