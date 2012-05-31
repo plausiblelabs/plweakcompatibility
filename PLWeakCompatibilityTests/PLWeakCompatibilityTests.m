@@ -208,4 +208,43 @@ TESTCLASS(PLWeakCompatibilityTestClass3, PLWeakCompatibilityTestClass2)
     }];
 }
 
+- (void) testMultithreadedRelease {
+    [self enumerateConfigurations: ^{
+        /* Use a lot of iterations because this bug doesn't show up reliably. */
+        for(int n = 0; n < 100000; n++) {
+            const void *targetCF;
+            __weak PLWeakCompatibilityTestClass1 *weakTarget;
+            
+            /* Create the target in an autorelease pool so we can control its lifetime. */
+            @autoreleasepool {
+                PLWeakCompatibilityTestClass1 *target = [[PLWeakCompatibilityTestClass1 alloc] init];
+                weakTarget = target;
+                targetCF = CFBridgingRetain(target);
+            }
+            
+            /* At this point, target has a retain count of 1. Bump that up so we can get some simultaneous release going. */
+            CFRetain(targetCF);
+            
+            /* Release it twice in the background. */
+            for (int i = 0; i < 2; i++)
+                [NSThread detachNewThreadSelector: @selector(invoke) toTarget: [^{
+                    @autoreleasepool {
+                        CFRelease(targetCF);
+                    }
+                } copy] withObject: nil];
+            
+            /* Wait for the weak target to go nil. If the ZWR implementation is vulnerable to race conditions between multiple
+             * release calls, this will *occasionally* trigger it. */
+            while (1) {
+                @autoreleasepool {
+                    id target = weakTarget;
+                    if (target == nil) {
+                        break;
+                    }
+                }
+            }
+        }
+    }];
+}
+
 @end

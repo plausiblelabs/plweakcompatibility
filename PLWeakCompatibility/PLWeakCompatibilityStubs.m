@@ -144,7 +144,7 @@ static CFMutableDictionaryRef gObjectToAddressesMap;
 static CFMutableSetRef gSwizzledClasses;
 
 // A list of all objects that are in the middle of being released
-static CFMutableSetRef gReleasingObjects;
+static CFMutableBagRef gReleasingObjects;
 
 // Condition variable used to signal when releasing objects are done releasing
 static pthread_cond_t gReleasingObjectsCond;
@@ -203,7 +203,7 @@ static PLObjectPtr PLLoadWeakRetained(PLObjectPtr *location) {
     PLObjectPtr obj;
     pthread_mutex_lock(&gWeakMutex); {
         obj = *location;
-        while (CFSetContainsValue(gReleasingObjects, obj)) {
+        while (CFBagContainsValue(gReleasingObjects, obj)) {
             pthread_cond_wait(&gReleasingObjectsCond, &gWeakMutex);
             obj = *location;
         }
@@ -295,7 +295,7 @@ static void WeakInit(void) {
 
         gSwizzledClasses = CFSetCreateMutable(NULL, 0, NULL);
         
-        gReleasingObjects = CFSetCreateMutable(NULL, 0, NULL);
+        gReleasingObjects = CFBagCreateMutable(NULL, 0, NULL);
         pthread_cond_init(&gReleasingObjectsCond, NULL);
         
         int err = pthread_key_create(&gTLSKey, DestroyTLS);
@@ -374,7 +374,7 @@ static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
     
     pthread_mutex_lock(&gWeakMutex); {
         // Add this object to the list of releasing objects.
-        CFSetAddValue(gReleasingObjects, self);
+        CFBagAddValue(gReleasingObjects, self);
         
         // Figure out which class release was last sent to, in the event of recursive releases.
         // If lastSent is Nil, then this is the first release call on the stack for this object
@@ -393,17 +393,16 @@ static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
     void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, releaseSELSwizzled);
     origIMP(self, _cmd);
     
-    // If dealloc never fired, clean up.
-    if (!tls->didDealloc) {
-        pthread_mutex_lock(&gWeakMutex); {
-            // We're no longer releasing.
-            CFSetRemoveValue(gReleasingObjects, self);
-            pthread_cond_broadcast(&gReleasingObjectsCond);
-            
-            // Reset the association to leave it clean for the next call to release.
+    pthread_mutex_lock(&gWeakMutex); {
+        // We're no longer releasing.
+        CFBagRemoveValue(gReleasingObjects, self);
+        pthread_cond_broadcast(&gReleasingObjectsCond);
+        
+        // If dealloc never fired, clean up the class table.
+        if (!tls->didDealloc) {
             CFDictionaryRemoveValue(tls->lastReleaseClassTable, self);
-        } pthread_mutex_unlock(&gWeakMutex);
-    }
+        }
+    } pthread_mutex_unlock(&gWeakMutex);
 }
 
 /**
@@ -429,8 +428,9 @@ static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
             CFSetApplyFunction(addresses, ClearAddress, NULL);
         CFDictionaryRemoveValue(gObjectToAddressesMap, self);
         
-        // We're no longer releasing (we're now releasED).
-        CFSetRemoveValue(gReleasingObjects, self);
+        // Although the releasing objects table hasn't changed, the value that others
+        // will load out of weak pointers to this object has, at which point they will
+        // no longer find it (i.e. nil) in the table, so we signal the change.
         pthread_cond_broadcast(&gReleasingObjectsCond);
 
         // We follow the same basic procedure as in SwizzledReleaseIMP to properly handle recursion.
