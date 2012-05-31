@@ -367,33 +367,32 @@ static void DestroyTLS(void *ptr) {
  */
 static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
     struct TLS *tls = GetTLS();
-    Class targetClass;
     
     pthread_mutex_lock(&gWeakMutex); {
         // Add this object to the list of releasing objects.
         CFBagAddValue(gReleasingObjects, self);
-        
-        // Figure out which class release was last sent to, in the event of recursive releases.
-        // If lastSent is Nil, then this is the first release call on the stack for this object
-        // and the call should start at the bottom. Otherwise, we want the next class above the
-        // last one that was used.
-        Class lastSent = (__bridge Class)CFDictionaryGetValue(tls->lastReleaseClassTable, self);
-        targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
-        targetClass = TopClassImplementingMethod(targetClass, releaseSELSwizzled);
-        CFDictionarySetValue(tls->lastReleaseClassTable, self, (__bridge void *)targetClass);
     } pthread_mutex_unlock(&gWeakMutex);
-
+    
+    // Figure out which class release was last sent to, in the event of recursive releases.
+    // If lastSent is Nil, then this is the first release call on the stack for this object
+    // and the call should start at the bottom. Otherwise, we want the next class above the
+    // last one that was used.
+    Class lastSent = (__bridge Class)CFDictionaryGetValue(tls->lastReleaseClassTable, self);
+    Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
+    targetClass = TopClassImplementingMethod(targetClass, releaseSELSwizzled);
+    CFDictionarySetValue(tls->lastReleaseClassTable, self, (__bridge void *)targetClass);
+    
     // Call through to the original implementation on the target class.
     void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, releaseSELSwizzled);
     origIMP(self, _cmd);
+    
+    // Clean up the class table.
+    CFDictionaryRemoveValue(tls->lastReleaseClassTable, self);
     
     pthread_mutex_lock(&gWeakMutex); {
         // We're no longer releasing.
         CFBagRemoveValue(gReleasingObjects, self);
         pthread_cond_broadcast(&gReleasingObjectsCond);
-        
-        // Clean up the class table.
-        CFDictionaryRemoveValue(tls->lastReleaseClassTable, self);
     } pthread_mutex_unlock(&gWeakMutex);
 }
 
@@ -410,7 +409,6 @@ static void ClearAddress(const void *value, void *context) {
  * A swizzled dealloc implementation which clears all weak references to the object before beginning destruction.
  */
 static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
-    Class targetClass;
     struct TLS *tls = GetTLS();
     
     pthread_mutex_lock(&gWeakMutex); {
@@ -424,17 +422,14 @@ static void SwizzledDeallocIMP(PLObjectPtr self, SEL _cmd) {
         // will load out of weak pointers to this object has, at which point they will
         // no longer find it (i.e. nil) in the table, so we signal the change.
         pthread_cond_broadcast(&gReleasingObjectsCond);
-
-        // We follow the same basic procedure as in SwizzledReleaseIMP to properly handle recursion.
-        Class lastSent = (__bridge Class)CFDictionaryGetValue(tls->lastDeallocClassTable, self);
-        targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
-        targetClass = TopClassImplementingMethod(targetClass, deallocSELSwizzled);
-        CFDictionarySetValue(tls->lastDeallocClassTable, self, (__bridge void *)targetClass);
-        
-        // Clean up the release association, since release can't do it in this case.
-        CFDictionaryRemoveValue(tls->lastReleaseClassTable, self);
     } pthread_mutex_unlock(&gWeakMutex);
-    
+
+    // We follow the same basic procedure as in SwizzledReleaseIMP to properly handle recursion.
+    Class lastSent = (__bridge Class)CFDictionaryGetValue(tls->lastDeallocClassTable, self);
+    Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
+    targetClass = TopClassImplementingMethod(targetClass, deallocSELSwizzled);
+    CFDictionarySetValue(tls->lastDeallocClassTable, self, (__bridge void *)targetClass);
+
     // Call through to the original implementation.
     void (*origIMP)(PLObjectPtr, SEL) = (__typeof__(origIMP))class_getMethodImplementation(targetClass, deallocSELSwizzled);
     origIMP(self, _cmd);
