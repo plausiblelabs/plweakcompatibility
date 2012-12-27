@@ -41,7 +41,7 @@ static inline bool has_mazwr () {
 
 // Minimal MAZWR API that we rely on
 @interface MAZeroingWeakRef : NSObject
-+ (id) initWithTarget: (PLObjectPtr) target;
+- (id) initWithTarget: (PLObjectPtr) target;
 - (PLObjectPtr) target;
 @end
 
