@@ -33,7 +33,6 @@
 		C2CB83551523D8F400E8ABFC /* PLWeakCompatibilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB83541523D8F400E8ABFC /* PLWeakCompatibilityTests.m */; };
 		C2CB835F1523D91500E8ABFE /* MAZeroingWeakRef.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFD /* MAZeroingWeakRef.h */; };
 		C2CB835F1523D91500E8ABFF /* MAZeroingWeakRef.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8ABFD /* MAZeroingWeakRef.h */; };
-		C2CB835F1523D91500E8AC01 /* MAZeroingWeakRef.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8AC00 /* MAZeroingWeakRef.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C2CB835F1523D91500E8AC03 /* MAZeroingWeakRef.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CB835F1523D91500E8AC00 /* MAZeroingWeakRef.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
@@ -515,7 +514,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				053888261523F7A500CDC1DF /* PLWeakCompatibilityStubs.m in Sources */,
-				C2CB835F1523D91500E8AC01 /* MAZeroingWeakRef.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
