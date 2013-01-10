@@ -49,6 +49,15 @@ TESTCLASS(PLWeakCompatibilityTestClass3, PLWeakCompatibilityTestClass2)
 @interface PLWeakCompatibilityEmptyTestSubclass : NSObject @end
 @implementation PLWeakCompatibilityEmptyTestSubclass @end
 
+@interface PLWeakCompatibilityManipulateSelfInDeallocClass : NSObject @end
+@implementation PLWeakCompatibilityManipulateSelfInDeallocClass
+
+- (void) dealloc {
+    CFRelease(CFBridgingRetain(self));
+}
+
+@end
+
 @implementation PLWeakCompatibilityTests
 
 - (void) enumerateConfigurations: (void (^)(void)) block {
@@ -252,6 +261,15 @@ TESTCLASS(PLWeakCompatibilityTestClass3, PLWeakCompatibilityTestClass2)
                 }
             }
         }
+    }];
+}
+
+- (void) testReleaseInDealloc {
+    [self enumerateConfigurations: ^{
+        id obj = [[PLWeakCompatibilityManipulateSelfInDeallocClass alloc] init];
+        __weak id weakObj = obj;
+        [obj self];
+        [weakObj self];
     }];
 }
 
