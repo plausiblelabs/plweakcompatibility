@@ -380,6 +380,16 @@ static void SwizzledReleaseIMP(PLObjectPtr self, SEL _cmd) {
     Class lastSent = (__bridge Class)CFDictionaryGetValue(tls->lastReleaseClassTable, self);
     Class targetClass = lastSent == Nil ? object_getClass(self) : class_getSuperclass(lastSent);
     targetClass = TopClassImplementingMethod(targetClass, releaseSELSwizzled);
+    
+    // If [self release] is called recursively (happens if 'self' is released in 'dealloc')
+    // then targetClass ends up being NSObject and doesn't respond to releaseSELSwizzled.
+    // To detect this, if targetClass doesn't respond to releaseSELSwizzled, start over at
+    // the bottom.
+    if (!class_respondsToSelector(targetClass, releaseSELSwizzled)) {
+        targetClass = object_getClass(self);
+        targetClass = TopClassImplementingMethod(targetClass, releaseSELSwizzled);
+    }
+    
     CFDictionarySetValue(tls->lastReleaseClassTable, self, (__bridge void *)targetClass);
     
     // Call through to the original implementation on the target class.
